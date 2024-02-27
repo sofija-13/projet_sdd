@@ -8,7 +8,7 @@ typedef struct cellPoint{
   struct cellPoint *suiv;       /* Cellule suivante dans la liste */
 } CellPoint;
 
-/* Celllule d une liste (chainee) de chaines */
+/* Cellule d une liste (chainee) de chaines */
 typedef struct cellChaine{
   int numero;                   /* Numero de la chaine */
   CellPoint *points;            /* Liste des points de la chaine */
@@ -23,6 +23,7 @@ typedef struct {
 } Chaines;
 
 Chaines* lectureChaines(FILE *f);
+//permet d’allouer, de remplir et de retourner une instance de notre structure a partir d’un fichier
 void ecrireChaines(Chaines *C, FILE *f);
 void afficheChainesSVG(Chaines *C, char* nomInstance);
 double longueurTotale(Chaines *C);
