@@ -25,6 +25,7 @@ typedef struct {
 Chaines* lectureChaines(FILE *f);
 //permet d’allouer, de remplir et de retourner une instance de notre structure a partir d’un fichier
 void ecrireChaines(Chaines *C, FILE *f);
+// ecrit dans un fichier le contenu d’une Chaines en respectant le format
 void afficheChainesSVG(Chaines *C, char* nomInstance);
 double longueurTotale(Chaines *C);
 int comptePointsTotal(Chaines *C);

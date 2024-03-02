@@ -10,4 +10,4 @@ Chaine.o: Chaine.c
 	gcc -Wall -c Chaine.c
 
 clean:
-	rm *.o
+	rm *.o ChaineMain
