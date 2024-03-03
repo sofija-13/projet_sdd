@@ -36,7 +36,6 @@ void SVGinit(SVGwriter *svg, char *nom, int sizeX, int sizeY) {
    svg->lineColor[0]='#';
 }
 
-
 void SVGlineColor(SVGwriter *svg, char *col) {
   strcpy(svg->lineColor,col);
 }
@@ -55,12 +54,10 @@ void SVGpoint(SVGwriter *svg, double x, double y) {
   fprintf(svg->file,"<circle cx=\"%lf\" cy=\"%lf\" r=\"2\" stroke=\"%s\" stroke-width=\"1\" fill=\"%s\" />\n",x,y,svg->pointColor,svg->pointColor);
 }
 
-
 void SVGline(SVGwriter *svg,double xa,double ya,double xb,double yb) {
   fprintf(svg->file, "<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" ", xa, ya, xb, yb);
   fprintf(svg->file, " style=\"stroke:%s;stroke-width:2\"/>\n", svg->lineColor);    
 }
-
 
 void SVGfinalize(SVGwriter *svg) {
   fprintf(svg->file, "\n\n</g></svg></body></html>\n");

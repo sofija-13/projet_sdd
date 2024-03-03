@@ -2,7 +2,7 @@
 #define _SVGWRITER_H_
 
 /* Dans cette librairie, les couleurs sont utilisees sous leur forme
-   hexadecimale comme le montre les exemples suivants) */
+   hexadecimale comme le montrent les exemples suivants */
 
 #define Black "#000000"
 #define Cyan "#00FFFF"
@@ -11,8 +11,6 @@
 #define Orange "#FFA800"
 #define Red "#FF0000"
 #define RoyalBlue "#486CE8"
-
-
 
 typedef struct SVGwriter_struct {
   
@@ -26,8 +24,6 @@ typedef struct SVGwriter_struct {
   char gencol[16];
 
 } SVGwriter;
-
-
   
 /* Initialise le struct SVGwriter passe en parametre
       nomfic: nom du fichier html \'a creer

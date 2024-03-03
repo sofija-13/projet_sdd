@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "Chaine.h"
+#include "SVGwriter.h"
 
 #define LIGNES 256
 
@@ -76,10 +78,77 @@ void ecrireChaines(Chaines *C, FILE *f){
         fprintf(f, "%d %s\n", nb_points, buffer);
         temp = temp->suiv;
     }
+} // A REVOIR -- erreur execution
+
+void afficheChainesSVG(Chaines *C, char* nomInstance){
+    // int i;
+    double maxx=0, maxy=0, minx=1e6, miny=1e6;
+    CellChaine *ccour;
+    CellPoint *pcour;
+    double precx,precy;
+    SVGwriter svg;
+    ccour=C->chaines;
+    while (ccour!=NULL){
+        pcour=ccour->points;
+        while (pcour!=NULL){
+            if (maxx<pcour->x) maxx=pcour->x;
+            if (maxy<pcour->y) maxy=pcour->y;
+            if (minx>pcour->x) minx=pcour->x;
+            if (miny>pcour->y) miny=pcour->y;  
+            pcour=pcour->suiv;
+        }
+    ccour=ccour->suiv;
+    }
+    SVGinit(&svg,nomInstance,500,500);
+    ccour=C->chaines;
+    while (ccour!=NULL){
+        pcour=ccour->points;
+        SVGlineRandColor(&svg);
+        SVGpoint(&svg,500*(pcour->x-minx)/(maxx-minx),500*(pcour->y-miny)/(maxy-miny)); 
+        precx=pcour->x;
+        precy=pcour->y;  
+        pcour=pcour->suiv;
+        while (pcour!=NULL){
+            SVGline(&svg,500*(precx-minx)/(maxx-minx),500*(precy-miny)/(maxy-miny),500*(pcour->x-minx)/(maxx-minx),500*(pcour->y-miny)/(maxy-miny));
+            SVGpoint(&svg,500*(pcour->x-minx)/(maxx-minx),500*(pcour->y-miny)/(maxy-miny));
+            precx=pcour->x;
+            precy=pcour->y;    
+            pcour=pcour->suiv;
+        }
+        ccour=ccour->suiv;
+    }
+    SVGfinalize(&svg);
 }
 
+double longueurChaine(CellChaine *c){
+    if (!c){
+        printf("Erreur longueurChaine() : chaine vide\n");
+        return 0.0;
+    }
+    double res = 0.0;
+    CellPoint *A = c->points;
+    CellPoint *B = c->points->suiv;
+    while(B){
+        res += sqrt((B->x - A->x)*(B->x - A->x) + (B->y - A->y)*(B->y - A->y));
+        A = A->suiv;
+        B = B->suiv;
+    }
+    return res;
+}
+
+double longueurTotale(Chaines *C){
+    if (!C){
+        printf("Erreur longueurTotale() : chaine vide\n");
+        return 0.0;
+    }
+    double total = 0.0;
+    CellChaine* temp = C->chaines;
+    while(temp){
+        total += longueurChaine(temp);
+        temp=temp->suiv;
+    }
+    return total;
+}
 /*
-void afficheChainesSVG(Chaines *C, char* nomInstance);
-double longueurTotale(Chaines *C);
 int comptePointsTotal(Chaines *C);
 */
