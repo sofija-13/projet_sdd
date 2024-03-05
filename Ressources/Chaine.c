@@ -5,84 +5,87 @@
 #include "Chaine.h"
 #include "SVGwriter.h"
 
-#define LIGNES 256
+#define LIGNE 256
 
 Chaines* lectureChaines(FILE *f){
-    if (!f){
+    if (f==NULL){
+        printf("Erreur lectureChaines : FILE f est NULL\n");
         return NULL;
     }
     
     Chaines* nv = (Chaines*)malloc(sizeof(Chaines));
-    char buffer[LIGNES];
-
-    fgets(buffer, LIGNES, f);
+    nv->chaines = NULL;
+    
+    char buffer[LIGNE];
 
     //lecture 2 premieres lignes
+    fgets(buffer, LIGNE, f);
     sscanf(buffer, "NbChain: %d", &nv->nbChaines);
-    fgets(buffer, LIGNES, f);
-    sscanf(buffer, "Gamma: %d", &nv->gamma);
-    printf("nbChaines = %d\tGamma = %d\n", nv->nbChaines, nv->gamma);
     
+    fgets(buffer, LIGNE, f);
+    sscanf(buffer, "Gamma: %d", &nv->gamma);
+    
+    // printf("nbChaines = %d\tGamma = %d\n", nv->nbChaines, nv->gamma);
+    
+
     //lecture reste du fichier
-    nv->chaines = NULL;
-    fgets(buffer, 4, f); 
-    printf("%s\n", buffer);
-    for (int i =0; i<nv->nbChaines; i++){
-        printf("i=%d\n", i);
+    fgets(buffer, LIGNE, f); 
+    // printf("%s\n", buffer);
+    for (int i=0; i<nv->nbChaines; i++){
+        // printf("i=%d\n", i);
         CellChaine *c = (CellChaine*)malloc(sizeof(CellChaine));
         int nbPoints = 0;
         // char* reste = (char*)malloc(256*sizeof(char)); //fin de la ligne (coordonnees points)
 
         sscanf(buffer, "%d %d", &c->numero, &nbPoints);
-        printf("c->numero=%d nbPoints=%d\n", c->numero, nbPoints);
+        // printf("numero=%d nbPoints=%d\n", c->numero, nbPoints);
 
-        fgets(buffer, LIGNES, f);
-        printf("\t%s", buffer);
+        char* reste = buffer+3;
+        // printf("\treste:\t%s", reste);
         
         for (int j=0; j<nbPoints; j++){
-            printf("\tj=%d\n", j);
+            // printf("\tj=%d\n", j);
             CellPoint *p = (CellPoint*)malloc(sizeof(CellPoint));
-            sscanf(buffer, "%lf %lf ", &p->x, &p->y);
-            printf("\t%lf %lf\n", p->x, p->y);
+            sscanf(reste, "%lf %lf ", &p->x, &p->y);
+            // printf("\t %.2lf %.2lf ", p->x, p->y);
+
             // insertion en tete
             p->suiv = c->points;
             c->points = p;
+            reste = reste+12; //MAJ buffer : points suivants
         }
-        
+        // printf("\n");
         // insertion en tete
         c->suiv = nv->chaines;
         nv->chaines = c;
-        fgets(buffer, 4, f);
+        fgets(buffer, LIGNE, f);
         
     }
     return nv;
 }
 
 void ecrireChaines(Chaines *C, FILE *f){
-    if (!f || !C){ // test validite des arguments
-        printf("Erreur ecrireChaines()\n");
+    if (f==NULL || C==NULL){ // test validite des arguments
+        printf("Erreur ecrireChaines : argument NULL\n");
         return;
     }
     fprintf(f, "NbChain: %d\nGamma: %d\n", C->nbChaines, C->gamma);
     CellChaine *temp = C->chaines;
-    for (int i=0; i<C->nbChaines; i++){
-
-        printf("i=%d\n", i); fflush(stdout);
-        printf("%d \n", temp->numero); fflush(stdout);
-        
-        char buffer[LIGNES];
+    while (temp){
         int nb_points=0;
-        char x[30];
-        CellPoint* tmp_points=temp->points;
-        while(tmp_points){
-            sprintf(x, "%lf %lf ", temp->points->x, temp->points->y);
-            printf("%lf %lf\n", temp->points->x, temp->points->y);
-            strcat(buffer, x);
-            // printf("%s\n", buffer);
+        fprintf(f, "%d ", temp->numero);
+        CellPoint* temp_points=temp->points;
+        while(temp_points){ // compte nbre de points
             nb_points++;
-            tmp_points = tmp_points->suiv;
+            temp_points = temp_points->suiv;
         }
-        fprintf(f, "%d %s\n", nb_points, buffer);
+        fprintf(f, "%d ", nb_points);
+        CellPoint* temp_points2=temp->points;
+        while(temp_points2){
+            fprintf(f, "%.2lf %.2lf ", temp_points2->x, temp_points2->y);
+            temp_points2 = temp_points2->suiv;
+        }
+        fprintf(f, "\n");
         temp = temp->suiv;
     }
 } // A REVOIR -- erreur execution
@@ -156,6 +159,5 @@ double longueurTotale(Chaines *C){
     }
     return total;
 }
-/*
-int comptePointsTotal(Chaines *C);
-*/
+
+// int comptePointsTotal(Chaines *C);

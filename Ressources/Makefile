@@ -13,4 +13,4 @@ SVGwriter.o: SVGwriter.c
 	gcc -Wall -c SVGwriter.c
 
 clean:
-	rm *.o ChaineMain *.html
+	rm *.o ChaineMain test.html test_ecriture.cha
