@@ -1,7 +1,7 @@
 #all
 
 ChaineMain: ChaineMain.o Chaine.o SVGwriter.o
-	gcc -Wall -lm -o ChaineMain ChaineMain.o Chaine.o SVGwriter.o
+	gcc -Wall -o ChaineMain ChaineMain.o Chaine.o SVGwriter.o -lm
 
 ChaineMain.o: ChaineMain.c 
 	gcc -Wall -c ChaineMain.c
