@@ -21,33 +21,38 @@ Chaines* lectureChaines(FILE *f){
     sscanf(buffer, "NbChain: %d", &nv->nbChaines);
     fgets(buffer, LIGNES, f);
     sscanf(buffer, "Gamma: %d", &nv->gamma);
-    // printf("lu: nbChaines = %d\tGamma = %d\n", nv->nbChaines, nv->gamma);
+    printf("nbChaines = %d\tGamma = %d\n", nv->nbChaines, nv->gamma);
     
     //lecture reste du fichier
     nv->chaines = NULL;
-    fgets(buffer, LIGNES, f);
+    fgets(buffer, 4, f); 
+    printf("%s\n", buffer);
     for (int i =0; i<nv->nbChaines; i++){
+        printf("i=%d\n", i);
         CellChaine *c = (CellChaine*)malloc(sizeof(CellChaine));
-        // printf("%s", buffer);
         int nbPoints = 0;
-        char* reste= malloc(256*sizeof(char)); //fin de la ligne (coordonnees points)
-        sscanf(buffer, "%d %d %s", &c->numero, &nbPoints, reste);
+        // char* reste = (char*)malloc(256*sizeof(char)); //fin de la ligne (coordonnees points)
 
+        sscanf(buffer, "%d %d", &c->numero, &nbPoints);
+        printf("c->numero=%d nbPoints=%d\n", c->numero, nbPoints);
+
+        fgets(buffer, LIGNES, f);
+        printf("\t%s", buffer);
+        
         for (int j=0; j<nbPoints; j++){
-            char* reste2= malloc(256*sizeof(char));
+            printf("\tj=%d\n", j);
             CellPoint *p = (CellPoint*)malloc(sizeof(CellPoint));
-            sscanf(reste, "%lf %lf %s", &p->x, &p->y, reste2);
-            
+            sscanf(buffer, "%lf %lf ", &p->x, &p->y);
+            printf("\t%lf %lf\n", p->x, p->y);
             // insertion en tete
             p->suiv = c->points;
             c->points = p;
-            reste=reste2;
         }
         
         // insertion en tete
         c->suiv = nv->chaines;
         nv->chaines = c;
-        fgets(buffer, LIGNES, f);
+        fgets(buffer, 4, f);
         
     }
     return nv;
@@ -62,18 +67,20 @@ void ecrireChaines(Chaines *C, FILE *f){
     CellChaine *temp = C->chaines;
     for (int i=0; i<C->nbChaines; i++){
 
-        // printf("i=%d\n", i); fflush(stdout);
-        // printf("%d \n", temp->numero); fflush(stdout);
+        printf("i=%d\n", i); fflush(stdout);
+        printf("%d \n", temp->numero); fflush(stdout);
         
         char buffer[LIGNES];
         int nb_points=0;
         char x[30];
-        while(temp->points){
+        CellPoint* tmp_points=temp->points;
+        while(tmp_points){
             sprintf(x, "%lf %lf ", temp->points->x, temp->points->y);
+            printf("%lf %lf\n", temp->points->x, temp->points->y);
             strcat(buffer, x);
             // printf("%s\n", buffer);
             nb_points++;
-            temp->points = temp->points->suiv;
+            tmp_points = tmp_points->suiv;
         }
         fprintf(f, "%d %s\n", nb_points, buffer);
         temp = temp->suiv;
