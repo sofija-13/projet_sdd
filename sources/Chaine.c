@@ -66,7 +66,7 @@ Chaines* lectureChaines(FILE *f){
 
 void ecrireChaines(Chaines *C, FILE *f){
     if (f==NULL || C==NULL){ // test validite des arguments
-        printf("Erreur ecrireChaines : argument NULL\n");
+        printf("ecrireChaines : argument NULL\n");
         return;
     }
     fprintf(f, "NbChain: %d\nGamma: %d\n", C->nbChaines, C->gamma);
@@ -91,6 +91,10 @@ void ecrireChaines(Chaines *C, FILE *f){
 } 
 
 void afficheChainesSVG(Chaines *C, char* nomInstance){
+    if (C==NULL){
+        printf("afficheChainesSVG : argument NULL\n");
+        return;
+    }
     // int i;
     double maxx=0, maxy=0, minx=1e6, miny=1e6;
     CellChaine *ccour;
@@ -132,7 +136,7 @@ void afficheChainesSVG(Chaines *C, char* nomInstance){
 
 double longueurChaine(CellChaine *c){
     if (!c){
-        printf("Erreur longueurChaine() : chaine vide\n");
+        printf("longueurTotale : argument NULL\n");
         return 0.0;
     }
     double res = 0.0;
@@ -148,7 +152,7 @@ double longueurChaine(CellChaine *c){
 
 double longueurTotale(Chaines *C){
     if (!C){
-        printf("Erreur longueurTotale() : chaine vide\n");
+        printf("longueurTotale : argument NULL\n");
         return 0.0;
     }
     double total = 0.0;
@@ -162,6 +166,7 @@ double longueurTotale(Chaines *C){
 
 int comptePointsTotal(Chaines *C){
     if (C==NULL || C->chaines==NULL){ // test validite des arguments
+        printf("comptePointsTotal : argument NULL\n");
         return 0;
     }
     int nbPoint = 0;
@@ -179,6 +184,10 @@ int comptePointsTotal(Chaines *C){
 }
 
 void liberer_chaines(Chaines *C){
+    if (C==NULL){
+        printf("liberer_chaines : argument NULL\n");
+        return;
+    }
     while(C->chaines){
         CellChaine* temp_chaine = C->chaines;
         C->chaines = C->chaines->suiv;
@@ -188,8 +197,8 @@ void liberer_chaines(Chaines *C){
             temp_chaine->points = temp_chaine->points->suiv;
             free(temp_point);
         }
-        free(temp_chaines->points);
-        free(temp_chaines);
+        free(temp_chaine->points);
+        free(temp_chaine);
     }
     free(C->chaines);
     free(C);

@@ -47,12 +47,24 @@ Reseau* reconstitueReseauListe(Chaines *C){
     //on parcourt une a une chaque chaine
     while (temp){
         //pour chaque point de la chaine
+        CellPoint *tempP = temp->points;
+        while (tempP){
+            // on teste si le point n’a pas deja ete rencontre auparavant
+                // on ajoute dans V un noeud correspondant au point p
+                rechercheCreeNoeudListe(res, tempP->x, tempP->y);
+            // on met a jour la liste des voisins de p et celles de ses voisins
+            // ??
+            tempP = tempP->suiv;
+        }
+        // on conserve la commodite de la chaine
+        // ??
         temp = temp->suiv;
-    
     }
+    
+        
 
     return res;
-} // A TERMINER
+} // A TERMINER ----------------------------
 
 // void ecrireReseau(Reseau *R, FILE *f);
 // int nbLiaisons(Reseau *R);
@@ -84,4 +96,26 @@ void afficheReseauSVG(Reseau *R, char* nomInstance){
         courN=courN->suiv;
     }
     SVGfinalize(&svg);
+}
+
+void liberer_reseau(Reseau *R){
+    while(R->noeuds){
+        CellNoeud *temp_noeuds = R->noeuds;
+        R->noeuds = R->noeuds->suiv;
+        while(temp_noeuds){
+            CellNoeud *temp_voisins = temp_noeuds->voisins;
+            temp_noeuds = temp_noeuds->suiv;
+        }
+        free(temp_noeuds);
+    }
+    while(R->commodites){
+        CellCommodite *temp_commodites = R->commodites;
+        R->commodites = R->commodites->suiv;
+        while(temp_commodites){
+
+            temp_commodites = temp_commodites->suiv;
+        }
+        free(temp_commodites);
+    }
+    free(R);
 }
