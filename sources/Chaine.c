@@ -177,3 +177,20 @@ int comptePointsTotal(Chaines *C){
     printf("Nombre total de points = %d\n", nbPoint);
     return nbPoint;
 }
+
+void liberer_chaines(Chaines *C){
+    while(C->chaines){
+        CellChaine* temp_chaine = C->chaines;
+        C->chaines = C->chaines->suiv;
+        
+        while(temp_chaine->points){
+            CellPoint* temp_point = temp_chaine->points;
+            temp_chaine->points = temp_chaine->points->suiv;
+            free(temp_point);
+        }
+        free(temp_chaines->points);
+        free(temp_chaines);
+    }
+    free(C->chaines);
+    free(C);
+}

@@ -20,5 +20,6 @@ int main(){
     afficheChainesSVG(test, "test_rpz");
     // printf("longueur totale = %lf\n", longueurTotale(test));
 
+    liberer_chaines(test);
     return 0;
 }

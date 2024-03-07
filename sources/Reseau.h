@@ -32,10 +32,15 @@ typedef struct {
 } Reseau;
 
 Noeud* rechercheCreeNoeudListe(Reseau *R, double x, double y);
+// retourne un Noeud du reseau R correspondant au point (x, y) s'il est dans la liste des noeuds de R, le cree sinon
+
 Reseau* reconstitueReseauListe(Chaines *C);
+// reconstruit le reseau R a partir de la liste des chaınes C comme indique dans le pseudo-code
+
 void ecrireReseau(Reseau *R, FILE *f);
 int nbLiaisons(Reseau *R);
 int nbCommodites(Reseau *R);
 void afficheReseauSVG(Reseau *R, char* nomInstance);
+
 #endif
 

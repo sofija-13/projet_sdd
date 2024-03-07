@@ -23,20 +23,23 @@ typedef struct {
 } Chaines;
 
 Chaines* lectureChaines(FILE *f);
-//permet d’allouer, de remplir et de retourner une instance de notre structure a partir d’un fichier
+// permet d’allouer, de remplir et de retourner une instance de notre structure a partir d’un fichier
 
 void ecrireChaines(Chaines *C, FILE *f);
 // ecrit dans un fichier le contenu d’une Chaines en respectant le format
 
 void afficheChainesSVG(Chaines *C, char* nomInstance);
-//permet de creer le fichier SVG en html a partir d’un struct Chaines
+// permet de creer le fichier SVG en html a partir d’un struct Chaines
 
 double longueurChaine(CellChaine *c);
-//calcule la longueur physique d'une chaine
+// calcule la longueur physique d'une chaine
 
 double longueurTotale(Chaines *C);
-//calcule la longueur physique d'une chaine
+// calcule la longueur physique d'une chaine
 
 int comptePointsTotal(Chaines *C);
+
+void liberer_chaines(Chaines *C);
+// libere la memoire allouee 
 
 #endif	

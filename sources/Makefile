@@ -1,4 +1,13 @@
-#all
+all ChaineMain
+
+ReconstitueReseau: ReconstitueReseau.o Reseau.o Chaine.o SVGwriter.o
+	gcc -Wall -o ReconstitueReseau ReconstitueReseau.o Reseau.o Chaine.o SVGwriter.o -lm
+
+ReconstitueReseau.o: ReconstitueReseau.c
+	gcc -Wall -c ReconstitueReseau.c
+	
+Reseau.o: Reseau.c
+	gcc -Wall -c Reseau.c
 
 ChaineMain: ChaineMain.o Chaine.o SVGwriter.o
 	gcc -Wall -o ChaineMain ChaineMain.o Chaine.o SVGwriter.o -lm
