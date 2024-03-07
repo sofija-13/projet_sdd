@@ -88,7 +88,7 @@ void ecrireChaines(Chaines *C, FILE *f){
         fprintf(f, "\n");
         temp = temp->suiv;
     }
-} // A REVOIR -- erreur execution
+} 
 
 void afficheChainesSVG(Chaines *C, char* nomInstance){
     // int i;
@@ -160,4 +160,20 @@ double longueurTotale(Chaines *C){
     return total;
 }
 
-// int comptePointsTotal(Chaines *C);
+int comptePointsTotal(Chaines *C){
+    if (C==NULL || C->chaines==NULL){ // test validite des arguments
+        return 0;
+    }
+    int nbPoint = 0;
+    CellChaine *temp = C->chaines;
+    while(temp){
+        CellPoint *tempP = temp->points;
+        while(tempP){
+            nbPoint++;
+            tempP = tempP->suiv;
+        }
+        temp = temp->suiv;
+    }
+    printf("Nombre total de points = %d\n", nbPoint);
+    return nbPoint;
+}
