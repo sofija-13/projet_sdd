@@ -7,6 +7,7 @@
 
 #define LIGNE 256
 
+/*
 Chaines* lectureChaines(FILE *f){
     if (f==NULL){
         printf("Erreur lectureChaines : FILE f est NULL\n");
@@ -61,6 +62,54 @@ Chaines* lectureChaines(FILE *f){
         fgets(buffer, LIGNE, f);
         
     }
+    return nv;
+} ta version provoquait des erreurs de mallocs donc j'en ai réécris une juste en dessous
+*/ 
+Chaines* lectureChaines(FILE *f) {
+    if (f == NULL) {
+        printf("Erreur : fichier invalide\n");
+        return NULL;
+    }
+
+    Chaines *nv = (Chaines*)malloc(sizeof(Chaines));
+    if (nv == NULL) {
+        printf("Erreur d'allocation de mémoire\n");
+        return NULL;
+    }
+
+    fscanf(f, "NbChain: %d\n", &(nv->nbChaines));
+    fscanf(f, "Gamma: %d\n", &(nv->gamma));
+
+    nv->chaines = NULL;  // Initialisation de la liste des chaines à NULL
+
+    for (int i = 0; i < nv->nbChaines; i++) {
+        CellChaine *c = (CellChaine*)malloc(sizeof(CellChaine));
+        if (c == NULL) {
+            printf("Erreur d'allocation de mémoire\n");
+            return NULL;
+        }
+        fscanf(f, "%d", &(c->numero));
+
+        c->points = NULL;  // Initialisation de la liste des points à NULL
+
+        int nbPoints;
+        fscanf(f, "%d", &nbPoints);
+
+        for (int j = 0; j < nbPoints; j++) {
+            CellPoint *p = (CellPoint*)malloc(sizeof(CellPoint));
+            if (p == NULL) {
+                printf("Erreur d'allocation de mémoire\n");
+                return NULL;
+            }
+            fscanf(f, "%lf %lf", &(p->x), &(p->y));
+            p->suiv = c->points;
+            c->points = p;
+        }
+
+        c->suiv = nv->chaines;
+        nv->chaines = c;
+    }
+
     return nv;
 }
 

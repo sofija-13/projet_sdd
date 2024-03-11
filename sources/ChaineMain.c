@@ -15,7 +15,7 @@ int main(){
     FILE *f2 = fopen("test_ecriture.cha", "w");
     ecrireChaines(test, f2);
     fclose(f2);
-
+    
     //test fonction afficheChainesSVG()
     afficheChainesSVG(test, "test_rpz");
     // printf("longueur totale = %lf\n", longueurTotale(test));

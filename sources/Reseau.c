@@ -99,15 +99,27 @@ void afficheReseauSVG(Reseau *R, char* nomInstance){
 }
 
 void liberer_reseau(Reseau *R){
+
     while(R->noeuds){
+
         CellNoeud *temp_noeuds = R->noeuds;
         R->noeuds = R->noeuds->suiv;
+        /*
         while(temp_noeuds){
+
             CellNoeud *temp_voisins = temp_noeuds->voisins;
             temp_noeuds = temp_noeuds->suiv;
         }
+
         free(temp_noeuds);
+        */
+       while (temp_noeuds) {
+            CellNoeud *temp_voisin = temp_noeuds;
+            temp_noeuds = temp_noeuds->suiv;
+            free(temp_voisin);
+        }
     }
+
     while(R->commodites){
         CellCommodite *temp_commodites = R->commodites;
         R->commodites = R->commodites->suiv;
