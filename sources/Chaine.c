@@ -102,7 +102,7 @@ Chaines* lectureChaines(FILE *f) {
                 return NULL;
             }
             fscanf(f, "%lf %lf", &(p->x), &(p->y));
-            printf(" %lf %lf \n",p->x, p->y);
+            printf(" x = %lf  y = %lf \n",p->x, p->y);
             p->suiv = c->points;
             c->points = p;
         }
