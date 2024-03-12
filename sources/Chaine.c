@@ -89,7 +89,7 @@ Chaines* lectureChaines(FILE *f) {
             return NULL;
         }
         fscanf(f, "%d", &(c->numero));
-
+        printf("%d\n",c->numero);
         c->points = NULL;  // Initialisation de la liste des points à NULL
 
         int nbPoints;
@@ -102,6 +102,7 @@ Chaines* lectureChaines(FILE *f) {
                 return NULL;
             }
             fscanf(f, "%lf %lf", &(p->x), &(p->y));
+            printf(" %lf %lf \n",p->x, p->y);
             p->suiv = c->points;
             c->points = p;
         }
