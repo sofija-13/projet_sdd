@@ -76,15 +76,15 @@ int nbLiaisons(Reseau *R){
     return res;
 }
 
-
+ 
 // int nbCommodites(Reseau *R);
 
 void ecrireReseau(Reseau *R, FILE *f){
     // 4 premieres lignes du fichier
-    fprintf(f, "NbNoeuds: %d\nNbLiaisons: %d\n\nGamma: %d\n\n", R->nbNoeuds, nbLiaisons(R), /*nbCommodites(R),*/ R->gamma);
-
+    fprintf(f, "NbNoeuds: %d\nNbLiaisons: %d\n\nGamma: %d\n\n", R->nbNoeuds, nbLiaisons(R), R->gamma);
+    // ajouter NbCommodites !!!!!
 } // A TERMINER ---
-// NbCommodites: %d
+
 void afficheReseauSVG(Reseau *R, char* nomInstance){
     CellNoeud *courN,*courv;
     SVGwriter svg;
@@ -119,14 +119,14 @@ void liberer_reseau(Reseau *R){
 
         CellNoeud *temp_noeuds = R->noeuds;
         R->noeuds = R->noeuds->suiv;
-        /*
+        
         while(temp_noeuds){
             CellNoeud *temp_voisins = temp_noeuds->voisins;
             temp_noeuds = temp_noeuds->suiv;
         }
 
         free(temp_noeuds);
-        */
+        
        while (temp_noeuds) {
             CellNoeud *temp_voisin = temp_noeuds;
             temp_noeuds = temp_noeuds->suiv;
