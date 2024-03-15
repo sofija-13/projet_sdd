@@ -37,9 +37,13 @@ Noeud* rechercheCreeNoeudListe(Reseau *R, double x, double y);
 Reseau* reconstitueReseauListe(Chaines *C);
 // reconstruit le reseau R a partir de la liste des chaınes C comme indique dans le pseudo-code
 
-void ecrireReseau(Reseau *R, FILE *f);
 int nbLiaisons(Reseau *R);
+//
+
 int nbCommodites(Reseau *R);
+//
+
+void ecrireReseau(Reseau *R, FILE *f);
 void afficheReseauSVG(Reseau *R, char* nomInstance);
 void liberer_reseau(Reseau *R);
 // libere la memoire allouee 

@@ -22,4 +22,4 @@ SVGwriter.o: SVGwriter.c
 	gcc -Wall -c SVGwriter.c
 
 clean:
-	rm *.o *.html ChaineMain  ReconstitueReseau
+	rm *.o *.html ChaineMain ReconstitueReseau

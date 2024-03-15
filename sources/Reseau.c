@@ -64,12 +64,27 @@ Reseau* reconstitueReseauListe(Chaines *C){
         
 
     return res;
-} // A TERMINER ----------------------------
+} // A TERMINER ---
 
-// void ecrireReseau(Reseau *R, FILE *f);
-// int nbLiaisons(Reseau *R);
+int nbLiaisons(Reseau *R){
+    int res = 0;
+    CellCommodite *temp = R->commodites;
+    while (temp){
+        res++;
+        temp = temp->suiv;
+    }
+    return res;
+}
+
+
 // int nbCommodites(Reseau *R);
 
+void ecrireReseau(Reseau *R, FILE *f){
+    // 4 premieres lignes du fichier
+    fprintf(f, "NbNoeuds: %d\nNbLiaisons: %d\n\nGamma: %d\n\n", R->nbNoeuds, nbLiaisons(R), /*nbCommodites(R),*/ R->gamma);
+
+} // A TERMINER ---
+// NbCommodites: %d
 void afficheReseauSVG(Reseau *R, char* nomInstance){
     CellNoeud *courN,*courv;
     SVGwriter svg;
@@ -98,15 +113,14 @@ void afficheReseauSVG(Reseau *R, char* nomInstance){
     SVGfinalize(&svg);
 }
 
+/*
 void liberer_reseau(Reseau *R){
-
     while(R->noeuds){
 
         CellNoeud *temp_noeuds = R->noeuds;
         R->noeuds = R->noeuds->suiv;
         /*
         while(temp_noeuds){
-
             CellNoeud *temp_voisins = temp_noeuds->voisins;
             temp_noeuds = temp_noeuds->suiv;
         }
@@ -119,15 +133,27 @@ void liberer_reseau(Reseau *R){
             free(temp_voisin);
         }
     }
-
     while(R->commodites){
         CellCommodite *temp_commodites = R->commodites;
         R->commodites = R->commodites->suiv;
-        while(temp_commodites){
-
-            temp_commodites = temp_commodites->suiv;
+        // free extrA
+        while(temp_commodites->extrA->voisins){
+            CellNoeud* tempA = temp_commodites->extrA->voisins;
+            temp_commodites->extrA->voisins = temp_commodites->extrA->voisins->suiv;
+            free()
         }
+        free(temp_commodites->extrA);
+        // free extrB
+        while(temp_commodites->extrB->voisins){
+            CellNoeud* tempB = temp_commodites->extrB->voisins;
+            temp_commodites->extrB->voisins = temp_commodites->extrB->voisins->suiv;
+        }
+        free(temp_commodites->extrB);
+
         free(temp_commodites);
     }
+    free(R->commodites);
+
     free(R);
 }
+*/
