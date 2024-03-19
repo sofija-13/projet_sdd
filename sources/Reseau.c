@@ -86,9 +86,11 @@ int nbCommodites(Reseau *R){
     return res;
 }
 
-void ajouter_couple(ListeCouple l, int a, int b);
+ListeCouple ajouter_couple(ListeCouple l, int a, int b){
 
-bool dejaVu(ListeCouple l, int a, int b);
+}
+
+int dejaVu(ListeCouple l, int a, int b);
 
 
 void ecrireReseau(Reseau *R, FILE *f){
@@ -98,7 +100,7 @@ void ecrireReseau(Reseau *R, FILE *f){
     // noeuds
     CellNoeud *temp_noeuds = R->noeuds;  
     while(temp_noeuds){
-        fprintf(f, "v %d %lf %lf\n", temp_noeuds->num, temp_noeuds->x, temp_noeuds->y);
+        fprintf(f, "v %d %lf %lf\n", temp_noeuds->nd->num, temp_noeuds->nd->x, temp_noeuds->nd->y);
         temp_noeuds = temp_noeuds->suiv;
     }
     fprintf(f, "\n");
@@ -107,14 +109,14 @@ void ecrireReseau(Reseau *R, FILE *f){
     ListeCouple liste = NULL;
     CellNoeud* temp_l = R->noeuds;  
     while(temp_l){
-        while (temp_l->voisins){
-            if (!dejaVu(liste, temp_l->num, temp_l->voisins->suiv->num)){
+        while (temp_l->nd->voisins){
+            if (dejaVu(liste, temp_l->nd->num, temp_l->nd->voisins->suiv->num) == 1){
                 // ecrire liaison dans le fichier
-                fprintf(f, "l %d %d\n", temp_l->num, temp_l->voisins->suiv->num);
+                fprintf(f, "l %d %d\n", temp_l->nd->num, temp_l->nd->voisins->suiv->nd->num);
                 // ajouter le couple dans la liste des liaisons deja vues
-                liste = ajouter_couple(liste, temp_l->num, temp_l->voisins->suiv->num);
+                liste = ajouter_couple(liste, temp_l->nd->num, temp_l->nd->voisins->suiv->nd->num);
             }
-            temp_l->voisins = temp_l->voisins->suiv;
+            temp_l->nd->voisins = temp_l->nd->voisins->suiv;
         }
         temp_l = temp_l->suiv;
     }

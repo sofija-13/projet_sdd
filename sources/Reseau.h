@@ -51,10 +51,10 @@ int nbLiaisons(Reseau *R);
 int nbCommodites(Reseau *R);
 // compte le nombre de commodites dans le reseau
 
-void ajouter_couple(ListeCouple l, int a, int b);
+ListeCouple ajouter_couple(ListeCouple l, int a, int b);
 // ajoute le couple (a,b) dans liste de couples l
 
-bool dejaVu(ListeCouple l, int a, int b);
+int dejaVu(ListeCouple l, int a, int b);
 // renvoie vrai si (a, b) est dans la liste de couples l
 
 void ecrireReseau(Reseau *R, FILE *f);
