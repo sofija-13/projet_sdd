@@ -1,4 +1,4 @@
-all: ChaineMain ReconstitueReseau
+#all: ChaineMain ReconstitueReseau
 
 ReconstitueReseau: ReconstitueReseau.o Reseau.o Chaine.o SVGwriter.o
 	gcc -Wall -o ReconstitueReseau ReconstitueReseau.o Reseau.o Chaine.o SVGwriter.o -lm
@@ -22,4 +22,4 @@ SVGwriter.o: SVGwriter.c
 	gcc -Wall -c SVGwriter.c
 
 clean:
-	rm *.o *.html ChaineMain ReconstitueReseau
+	rm *.o *.html ChaineMain ReconstitueReseau *test*

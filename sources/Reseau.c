@@ -74,15 +74,59 @@ int nbLiaisons(Reseau *R){
         temp = temp->suiv;
     }
     return res;
+} // A CORRIGER -----
+ 
+int nbCommodites(Reseau *R){
+    CellCommodite* temp = R->commodites;
+    int res=0;
+    while(temp){
+        res++;
+        temp=temp->suiv;
+    }
+    return res;
 }
 
- 
-// int nbCommodites(Reseau *R);
+void ajouter_couple(ListeCouple l, int a, int b);
+
+bool dejaVu(ListeCouple l, int a, int b);
+
 
 void ecrireReseau(Reseau *R, FILE *f){
     // 4 premieres lignes du fichier
-    fprintf(f, "NbNoeuds: %d\nNbLiaisons: %d\n\nGamma: %d\n\n", R->nbNoeuds, nbLiaisons(R), R->gamma);
-    // ajouter NbCommodites !!!!!
+    fprintf(f, "NbNoeuds: %d\nNbLiaisons: %d\nNCommodites: %d\nGamma: %d\n\n", R->nbNoeuds, nbLiaisons(R), nbCommodites(R), R->gamma);
+
+    // noeuds
+    CellNoeud *temp_noeuds = R->noeuds;  
+    while(temp_noeuds){
+        fprintf(f, "v %d %lf %lf\n", temp_noeuds->num, temp_noeuds->x, temp_noeuds->y);
+        temp_noeuds = temp_noeuds->suiv;
+    }
+    fprintf(f, "\n");
+
+    // liaisons
+    ListeCouple liste = NULL;
+    CellNoeud* temp_l = R->noeuds;  
+    while(temp_l){
+        while (temp_l->voisins){
+            if (!dejaVu(liste, temp_l->num, temp_l->voisins->suiv->num)){
+                // ecrire liaison dans le fichier
+                fprintf(f, "l %d %d\n", temp_l->num, temp_l->voisins->suiv->num);
+                // ajouter le couple dans la liste des liaisons deja vues
+                liste = ajouter_couple(liste, temp_l->num, temp_l->voisins->suiv->num);
+            }
+            temp_l->voisins = temp_l->voisins->suiv;
+        }
+        temp_l = temp_l->suiv;
+    }
+    fprintf(f, "\n");
+
+    // commodites
+    CellCommodite *temp_commodites = R->commodites;  
+    while(temp_commodites){
+        fprintf(f, "k %d %d\n", temp_commodites->extrA->num, temp_commodites->extrB->num);
+        temp_commodites = temp_commodites->suiv;
+    }
+
 } // A TERMINER ---
 
 void afficheReseauSVG(Reseau *R, char* nomInstance){
