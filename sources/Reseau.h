@@ -42,6 +42,8 @@ typedef Couple* ListeCouple;
 Noeud* rechercheCreeNoeudListe(Reseau *R, double x, double y);
 // retourne un Noeud du reseau R correspondant au point (x, y) s'il est dans la liste des noeuds de R, le cree sinon
 
+int rechercheVoisin(Noeud *nd1, Noeud *nd2);
+void ajouterVoisin(Noeud* noeud, Noeud* voisin);
 Reseau* reconstitueReseauListe(Chaines *C);
 // reconstruit le reseau R a partir de la liste des chaınes C comme indique dans le pseudo-code
 
@@ -59,6 +61,7 @@ int dejaVu(ListeCouple l, int a, int b);
 
 void ecrireReseau(Reseau *R, FILE *f);
 void afficheReseauSVG(Reseau *R, char* nomInstance);
+void liberer_noeuds(CellNoeud *noeuds) ;
 void liberer_reseau(Reseau *R);
 // libere la memoire allouee 
 

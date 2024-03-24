@@ -1,4 +1,4 @@
-#all: ChaineMain ReconstitueReseau
+all: ChaineMain ReconstitueReseau
 
 ReconstitueReseau: ReconstitueReseau.o Reseau.o Chaine.o SVGwriter.o
 	gcc -Wall -o ReconstitueReseau ReconstitueReseau.o Reseau.o Chaine.o SVGwriter.o -lm
