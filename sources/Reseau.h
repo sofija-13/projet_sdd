@@ -60,8 +60,11 @@ ListeCouple ajouter_couple(ListeCouple l, int a, int b);
 
 int dejaVu(ListeCouple l, int a, int b);
 // renvoie vrai si (a, b) est dans la liste de couples l
-
+ListeCouple construireListeCouple(Reseau *R) ;
+void trierListeCouple(ListeCouple liaisons) ;
 void ecrireReseau(Reseau *R, FILE *f);
+
+
 void afficheReseauSVG(Reseau *R, char* nomInstance);
 void liberer_noeuds(CellNoeud *noeuds) ;
 void liberer_reseau(Reseau *R);

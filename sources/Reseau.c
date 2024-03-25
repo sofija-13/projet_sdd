@@ -105,6 +105,7 @@ void ajouterVoisin(Noeud* noeud, Noeud* voisin) {
     // Mise à jour de la liste des voisins du noeud
     noeud->voisins = nouveau_voisin;
 }
+
 Reseau* reconstitueReseauListe(Chaines *C) {
     // Vérification de la validité de l'argument
     if (C == NULL) {
@@ -274,23 +275,6 @@ void ecrireReseau(Reseau *R, FILE *f){
 
 } */
 // A TERMINER ---
-ListeCouple ajouter_couple(ListeCouple l, int a, int b) {
-    // Créer une nouvelle cellule pour le nouveau couple
-    ListeCouple nouveau_couple = (ListeCouple)malloc(sizeof(struct couple));
-    if (nouveau_couple == NULL) {
-        printf("Erreur d'allocation de mémoire pour le couple\n");
-        return l; // Retourner la liste inchangée en cas d'échec d'allocation mémoire
-    }
-
-    // Assigner les valeurs du couple
-    nouveau_couple->A = a;
-    nouveau_couple->B = b;
-    nouveau_couple->suiv = l; // Insérer en tête de liste
-
-    return nouveau_couple; // Retourner la nouvelle liste avec le couple ajouté en tête
-}
-
-
 int dejaVu(ListeCouple l, int a, int b){
     ListeCouple tmp = l;
     while(l){
@@ -323,8 +307,8 @@ void ecrireReseau(Reseau *R, FILE *f) {
         CellNoeud *voisin = temp_noeud->nd->voisins;
         while (voisin != NULL) {
             // Assurez-vous de ne pas écrire la liaison deux fois
-            if (temp_noeud->nd->num < voisin->nd->num) {
-                fprintf(f, "l %d %d\n", temp_noeud->nd->num, voisin->nd->num);
+            if ( voisin->nd->num < temp_noeud->nd->num) {
+                fprintf(f, "l %d %d\n", voisin->nd->num,temp_noeud->nd->num );
             }
             voisin = voisin->suiv;
         }
@@ -338,7 +322,8 @@ void ecrireReseau(Reseau *R, FILE *f) {
         fprintf(f, "k %d %d\n", temp_commodite->extrB->num, temp_commodite->extrA->num);
         temp_commodite = temp_commodite->suiv;
     }
-}//Pas complet
+}
+
 
 void afficheReseauSVG(Reseau *R, char* nomInstance){
     CellNoeud *courN,*courv;
