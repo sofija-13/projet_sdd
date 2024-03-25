@@ -20,6 +20,10 @@ int main(int argc, char** argv){
     Reseau* R = reconstitueReseauListe(c);
     fclose(f);
     
+    FILE *f2 = fopen("test_00014", "w");
+    ecrireReseau(R,f2);
+    fclose(f2);
+    
     /*
     switch(atoi(argv[2])){
     case 0: //liste chainee

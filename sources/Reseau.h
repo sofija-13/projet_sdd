@@ -34,7 +34,7 @@ typedef struct {
 typedef struct couple{ // liste chainee des liaisons deja rencontrees
     int A; // num noeud a
     int B; // num noeud b
-    struct couple_nd *suiv; 
+    struct couple *suiv; 
 } Couple;
 
 typedef Couple* ListeCouple;
@@ -52,6 +52,8 @@ int nbLiaisons(Reseau *R);
 
 int nbCommodites(Reseau *R);
 // compte le nombre de commodites dans le reseau
+
+int nbVoisins(Noeud *nd);
 
 ListeCouple ajouter_couple(ListeCouple l, int a, int b);
 // ajoute le couple (a,b) dans liste de couples l

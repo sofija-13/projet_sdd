@@ -167,7 +167,7 @@ Reseau* reconstitueReseauListe(Chaines *C) {
 
     return res;
 }
-
+/*
 int nbLiaisons(Reseau *R){
     int res = 0;
     CellCommodite *temp = R->commodites;
@@ -177,7 +177,7 @@ int nbLiaisons(Reseau *R){
     }
     return res;
 } // A CORRIGER -----
-/*
+*/
 int nbLiaisons(Reseau *R) {
     if (R == NULL) {
         printf("Erreur nbLiaisons : Reseau NULL\n");
@@ -186,13 +186,14 @@ int nbLiaisons(Reseau *R) {
     
     int cpt = 0;
     CellNoeud *temp = R->noeuds;
+    
     while (temp) {
         cpt += nbVoisins(temp->nd);
         temp = temp->suiv;
     }
-    return count / 2; // Chaque liaison est comptée deux fois
+    return cpt / 2; // Chaque liaison est comptée deux fois
 }
-*/
+
 int nbCommodites(Reseau *R){
     CellCommodite* temp = R->commodites;
     int res=0;
@@ -203,10 +204,26 @@ int nbCommodites(Reseau *R){
     return res;
 }
 
-/*ListeCouple ajouter_couple(ListeCouple l, int a, int b){
+int nbVoisins(Noeud *nd) {
+    if (nd == NULL) {
+        printf("Erreur nbVoisins : Noeud NULL\n");
+        return 0;
+    }
 
-}*/
+    int count = 0;
+    CellNoeud *voisin = nd->voisins;
+    while (voisin) {
+        count++;
+        voisin = voisin->suiv;
+    }
+    return count;
+}
+
 /*
+ListeCouple ajouter_couple(ListeCouple l, int a, int b){
+
+}
+
 int dejaVu(ListeCouple l, int a, int b){
     ListeCouple tmp = l;
     while(l){
@@ -257,6 +274,71 @@ void ecrireReseau(Reseau *R, FILE *f){
 
 } */
 // A TERMINER ---
+ListeCouple ajouter_couple(ListeCouple l, int a, int b) {
+    // Créer une nouvelle cellule pour le nouveau couple
+    ListeCouple nouveau_couple = (ListeCouple)malloc(sizeof(struct couple));
+    if (nouveau_couple == NULL) {
+        printf("Erreur d'allocation de mémoire pour le couple\n");
+        return l; // Retourner la liste inchangée en cas d'échec d'allocation mémoire
+    }
+
+    // Assigner les valeurs du couple
+    nouveau_couple->A = a;
+    nouveau_couple->B = b;
+    nouveau_couple->suiv = l; // Insérer en tête de liste
+
+    return nouveau_couple; // Retourner la nouvelle liste avec le couple ajouté en tête
+}
+
+
+int dejaVu(ListeCouple l, int a, int b){
+    ListeCouple tmp = l;
+    while(l){
+        if((tmp->A == a && tmp->B ==b) || (tmp->A == b && tmp->B ==a)){
+            return 0;
+        }
+        tmp = tmp->suiv;
+    }
+    return 1;
+}
+
+void ecrireReseau(Reseau *R, FILE *f) {
+    // Écrire les informations générales du réseau dans le fichier
+    fprintf(f, "NbNoeuds: %d\n", R->nbNoeuds);
+    fprintf(f, "NbLiaisons: %d\n", nbLiaisons(R)); // Utilisez la fonction nbLiaisons pour obtenir le nombre de liaisons
+    fprintf(f, "NbCommodites: %d\n", nbCommodites(R)); // Utilisez la fonction nbCommodites pour obtenir le nombre de commodités
+    fprintf(f, "Gamma: %d\n\n", R->gamma);
+
+    // Écrire les coordonnées des noeuds dans le fichier
+    CellNoeud *temp_noeud = R->noeuds;
+    while (temp_noeud != NULL) {
+        fprintf(f, "v %d %lf %lf\n", temp_noeud->nd->num, temp_noeud->nd->x, temp_noeud->nd->y);
+        temp_noeud = temp_noeud->suiv;
+    }
+    fprintf(f, "\n");
+
+    // Écrire les liaisons dans le fichier
+    temp_noeud = R->noeuds;
+    while (temp_noeud != NULL) {
+        CellNoeud *voisin = temp_noeud->nd->voisins;
+        while (voisin != NULL) {
+            // Assurez-vous de ne pas écrire la liaison deux fois
+            if (temp_noeud->nd->num < voisin->nd->num) {
+                fprintf(f, "l %d %d\n", temp_noeud->nd->num, voisin->nd->num);
+            }
+            voisin = voisin->suiv;
+        }
+        temp_noeud = temp_noeud->suiv;
+    }
+    fprintf(f, "\n");
+
+    // Écrire les commodités dans le fichier
+    CellCommodite *temp_commodite = R->commodites;
+    while (temp_commodite != NULL) {
+        fprintf(f, "k %d %d\n", temp_commodite->extrB->num, temp_commodite->extrA->num);
+        temp_commodite = temp_commodite->suiv;
+    }
+}//Pas complet
 
 void afficheReseauSVG(Reseau *R, char* nomInstance){
     CellNoeud *courN,*courv;
