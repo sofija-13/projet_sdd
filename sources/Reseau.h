@@ -44,6 +44,7 @@ Noeud* rechercheCreeNoeudListe(Reseau *R, double x, double y);
 
 int rechercheVoisin(Noeud *nd1, Noeud *nd2);
 void ajouterVoisin(Noeud* noeud, Noeud* voisin);
+
 Reseau* reconstitueReseauListe(Chaines *C);
 // reconstruit le reseau R a partir de la liste des chaınes C comme indique dans le pseudo-code
 

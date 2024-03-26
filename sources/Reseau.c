@@ -32,7 +32,7 @@ Noeud* rechercheCreeNoeudListe(Reseau *R, double x, double y){
 }
 
 int rechercheVoisin(Noeud *nd1, Noeud *nd2) {
-    // Vérification des arguments
+    // test validite des arguments
     if (nd1 == NULL || nd2 == NULL) {
         printf("Erreur rechercheVoisin : argument NULL\n");
         return -1; // Valeur de retour pour erreur
@@ -49,6 +49,7 @@ int rechercheVoisin(Noeud *nd1, Noeud *nd2) {
 
     return 0; // nd2 n'est pas voisin de nd1
 }
+
 void ajouterVoisin(Noeud* noeud, Noeud* voisin) {
     // Vérification de la validité des arguments
     if (noeud == NULL || voisin == NULL) {
@@ -71,27 +72,23 @@ void ajouterVoisin(Noeud* noeud, Noeud* voisin) {
     noeud->voisins = nouveau_voisin;
 }
 
-Reseau* reconstitueReseauListe(Chaines *C) {
-    // Vérification de la validité de l'argument
-    if (C == NULL) {
+Reseau* reconstitueReseauListe(Chaines *C){
+    if (C == NULL) { // test validite des arguments
         printf("Erreur reconstitueReseauListe : argument NULL\n");
         return NULL;
     }
-
-    // Allocation de mémoire pour le réseau
+    // nouveau reseau
     Reseau* res = (Reseau*)malloc(sizeof(Reseau));
     if (res == NULL) {
-        printf("Erreur d'allocation de mémoire pour le réseau\n");
+        printf("Erreur reconstitueReseauListe: erreur malloc pour nouveau reseau\n");
         return NULL;
     }
-
-    // Initialisation des champs du réseau
     res->nbNoeuds = 0;
     res->gamma = C->gamma;
     res->noeuds = NULL;
     res->commodites = NULL;
     
-    // Parcours de chaque chaîne dans C
+    // on parcourt une a une chaque chaine
     CellChaine *temp = C->chaines;
     while (temp) {
         // Vérification de l'existence de points dans la chaîne
@@ -101,7 +98,7 @@ Reseau* reconstitueReseauListe(Chaines *C) {
             // Création du premier noeud de la chaîne
             Noeud* tempN1 = rechercheCreeNoeudListe(res, tempP->x, tempP->y);
 
-            // Parcours de chaque point dans la chaîne
+            //pour chaque point de la chaine
             while (tempP->suiv) {
                 // Création du noeud suivant
                 Noeud* tempN2 = rechercheCreeNoeudListe(res, tempP->suiv->x, tempP->suiv->y);
