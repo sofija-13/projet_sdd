@@ -1,7 +1,13 @@
-all: ChaineMain ReconstitueReseau
+all: ChaineMain ReconstitueReseau 
 
-ReconstitueReseau: ReconstitueReseau.o Reseau.o Chaine.o SVGwriter.o
-	gcc -Wall -o ReconstitueReseau ReconstitueReseau.o Reseau.o Chaine.o SVGwriter.o -lm
+Hachage.o: Hachage.c
+	gcc -Wall -c Hachage.c
+
+ArbreQuat.o: ArbreQuat.c
+	gcc -Wall -c ArbreQuat.c
+
+ReconstitueReseau: ReconstitueReseau.o Reseau.o Chaine.o SVGwriter.o Hachage.o ArbreQuat.o
+	gcc -Wall -o ReconstitueReseau ReconstitueReseau.o Reseau.o Chaine.o SVGwriter.o Hachage.o ArbreQuat.o -lm
 
 ReconstitueReseau.o: ReconstitueReseau.c
 	gcc -Wall -c ReconstitueReseau.c
