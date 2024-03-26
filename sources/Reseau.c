@@ -220,7 +220,6 @@ void ecrireReseau(Reseau *R, FILE *f) {
     }
 }
 
-
 void afficheReseauSVG(Reseau *R, char* nomInstance){
     CellNoeud *courN,*courv;
     SVGwriter svg;
@@ -248,7 +247,6 @@ void afficheReseauSVG(Reseau *R, char* nomInstance){
     }
     SVGfinalize(&svg);
 }
-
 
 void liberer_noeuds(CellNoeud *noeuds) {
     // Libération récursive des noeuds et de leurs voisins
@@ -291,7 +289,3 @@ void liberer_reseau(Reseau *R) {
     // Libération de la structure Reseau
     free(R);
 }
-
-
-
-
