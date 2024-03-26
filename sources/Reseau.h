@@ -43,7 +43,10 @@ Noeud* rechercheCreeNoeudListe(Reseau *R, double x, double y);
 // retourne un Noeud du reseau R correspondant au point (x, y) s'il est dans la liste des noeuds de R, le cree sinon
 
 int rechercheVoisin(Noeud *nd1, Noeud *nd2);
+//regarde si nd2 est voisin de nd1
+
 void ajouterVoisin(Noeud* noeud, Noeud* voisin);
+//ajoute le voisin au noeud 
 
 Reseau* reconstitueReseauListe(Chaines *C);
 // reconstruit le reseau R a partir de la liste des chaınes C comme indique dans le pseudo-code
@@ -55,19 +58,23 @@ int nbCommodites(Reseau *R);
 // compte le nombre de commodites dans le reseau
 
 int nbVoisins(Noeud *nd);
+// compte le nombre de voisin d'un noeud
 
 ListeCouple ajouter_couple(ListeCouple l, int a, int b);
 // ajoute le couple (a,b) dans liste de couples l
 
 int dejaVu(ListeCouple l, int a, int b);
 // renvoie vrai si (a, b) est dans la liste de couples l
-ListeCouple construireListeCouple(Reseau *R) ;
-void trierListeCouple(ListeCouple liaisons) ;
-void ecrireReseau(Reseau *R, FILE *f);
 
+void ecrireReseau(Reseau *R, FILE *f);
+//
 
 void afficheReseauSVG(Reseau *R, char* nomInstance);
+//
+
 void liberer_noeuds(CellNoeud *noeuds) ;
+// libere la memoire des noeuds
+
 void liberer_reseau(Reseau *R);
 // libere la memoire allouee 
 

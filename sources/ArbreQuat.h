@@ -1,5 +1,6 @@
 #ifndef __ARBRE_QUAT_H__
 #define __ARBRE_QUAT_H__
+#include "Reseau.h"
 
 /* Arbre quaternaire contenant les noeuds du reseau */
 typedef struct arbreQuat{
@@ -13,4 +14,24 @@ typedef struct arbreQuat{
     struct arbreQuat *ne;   /* Sous-arbre nord-est, pour x >= xc et y >= yc */
 } ArbreQuat;
 
+void chaineCoordMinMax(Chaines* C, double* xmin, double* ymin, double* xmax, double* ymax);
+//détermine les coordonnées minimales et maximales des points constituant les différentes chaı̂nes du réseau.
+
+ArbreQuat* creerArbreQuat(double xc, double yc, double coteX, double coteY);
+/*permet de créer une cellule de l’arbre quaternaire, de centre (xc , yc ), de longueur
+coteX et de hauteur coteY. Cette fonction initialisera le nœud du réseau, les arbres nord-ouest, nord-
+est, sud-ouest et sud-est à NULL.*/
+
+void insererNoeudArbre(Noeud* n, ArbreQuat** a, ArbreQuat* parent);
+//
+
+//creerArbreQuat
+
+//insererNoeudArbre
+
+Noeud* rechercheCreeNoeudArbre(Reseau* R, ArbreQuat** a, ArbreQuat* parent, double x, double y);
+//
+
+Reseau* reconstitueReseauArbre(Chaines* C);
+//
 #endif

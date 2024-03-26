@@ -192,7 +192,7 @@ void ecrireReseau(Reseau *R, FILE *f) {
 
     // Écrire les coordonnées des noeuds dans le fichier
     CellNoeud *temp_noeud = R->noeuds;
-    while (temp_noeud != NULL) {
+    while (temp_noeud) {
         fprintf(f, "v %d %lf %lf\n", temp_noeud->nd->num, temp_noeud->nd->x, temp_noeud->nd->y);
         temp_noeud = temp_noeud->suiv;
     }
@@ -200,10 +200,9 @@ void ecrireReseau(Reseau *R, FILE *f) {
 
     // Écrire les liaisons dans le fichier
     temp_noeud = R->noeuds;
-    while (temp_noeud != NULL) {
+    while (temp_noeud) {
         CellNoeud *voisin = temp_noeud->nd->voisins;
-        while (voisin != NULL) {
-            // Assurez-vous de ne pas écrire la liaison deux fois
+        while (voisin) {
             if ( voisin->nd->num < temp_noeud->nd->num) {
                 fprintf(f, "l %d %d\n", voisin->nd->num,temp_noeud->nd->num );
             }
@@ -215,7 +214,7 @@ void ecrireReseau(Reseau *R, FILE *f) {
 
     // Écrire les commodités dans le fichier
     CellCommodite *temp_commodite = R->commodites;
-    while (temp_commodite != NULL) {
+    while (temp_commodite) {
         fprintf(f, "k %d %d\n", temp_commodite->extrB->num, temp_commodite->extrA->num);
         temp_commodite = temp_commodite->suiv;
     }
