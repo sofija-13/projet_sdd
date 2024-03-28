@@ -1,13 +1,16 @@
 all: ChaineMain ReconstitueReseau 
 
+ReconstitueReseau: ReconstitueReseau.o Reseau.o Chaine.o SVGwriter.o Hachage.o ArbreQuat.o
+	gcc -Wall -o ReconstitueReseau ReconstitueReseau.o Reseau.o Chaine.o SVGwriter.o Hachage.o ArbreQuat.o -lm
+
+Hachage: Hachage.o Reseau.o SVGwriter.o
+	gcc -Wall -o Hachage Hachage.o Reseau.o Chaine.o SVGwriter.o
+
 Hachage.o: Hachage.c
 	gcc -Wall -c Hachage.c
 
 ArbreQuat.o: ArbreQuat.c
 	gcc -Wall -c ArbreQuat.c
-
-ReconstitueReseau: ReconstitueReseau.o Reseau.o Chaine.o SVGwriter.o Hachage.o ArbreQuat.o
-	gcc -Wall -o ReconstitueReseau ReconstitueReseau.o Reseau.o Chaine.o SVGwriter.o Hachage.o ArbreQuat.o -lm
 
 ReconstitueReseau.o: ReconstitueReseau.c
 	gcc -Wall -c ReconstitueReseau.c
@@ -28,4 +31,4 @@ SVGwriter.o: SVGwriter.c
 	gcc -Wall -c SVGwriter.c
 
 clean:
-	rm *.o *.html ChaineMain ReconstitueReseau *test*
+	rm *.o *.html ChaineMain ReconstitueReseau *test* Hachage
