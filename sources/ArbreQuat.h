@@ -25,13 +25,11 @@ est, sud-ouest et sud-est à NULL.*/
 void insererNoeudArbre(Noeud* n, ArbreQuat** a, ArbreQuat* parent);
 //
 
-//creerArbreQuat
-
-//insererNoeudArbre
-
 Noeud* rechercheCreeNoeudArbre(Reseau* R, ArbreQuat** a, ArbreQuat* parent, double x, double y);
 //
-
+void insererNoeudsArbreDansReseau(ArbreQuat* arbre, Reseau** R);
 Reseau* reconstitueReseauArbre(Chaines* C);
 //
+
+void libererArbreQuaternaire(ArbreQuat* a);
 #endif
