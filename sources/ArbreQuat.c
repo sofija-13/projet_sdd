@@ -244,7 +244,6 @@ Reseau* reconstitueReseauArbre(Chaines *C){
     
         tempC = tempC->suiv;
     }
-
     return res;
 }
 
