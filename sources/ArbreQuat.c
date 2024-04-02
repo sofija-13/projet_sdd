@@ -140,7 +140,7 @@ Noeud* rechercheCreeNoeudArbre(Reseau* R, ArbreQuat** a, ArbreQuat* parent, doub
 
     return NULL; // Retourne NULL par défaut (cas improbable)
 }
-
+/*
 Reseau* reconstitueReseauArbre(Chaines* C){
     if(C == NULL || C->nbChaines){
         printf("La chaine est vide \n");
@@ -178,6 +178,74 @@ Reseau* reconstitueReseauArbre(Chaines* C){
         }
         tempC = tempC->suiv;
     }
+}*/
+
+Reseau* reconstitueReseauArbre(Chaines *C){
+    if (C == NULL || C->nbChaines == 0) { // test validite des arguments
+        printf("Erreur reconstitueReseauListe : C == NULL ou 0 chaine\n");
+        return NULL;
+    }
+    // nouveau reseau
+    Reseau* res = (Reseau*)malloc(sizeof(Reseau));
+    if (res == NULL) {
+        printf("Erreur reconstitueReseauListe: erreur malloc pour nouveau reseau\n");
+        return NULL;
+    }
+    res->nbNoeuds = 0;
+    res->gamma = C->gamma;
+    res->noeuds = NULL;
+    res->commodites = NULL;
+
+    // nouvel arbre quaternaire
+    double xmin;
+    double ymin; 
+    double xmax;
+    double ymax;
+    chaineCoordMinMax(C, &xmin, &ymin, &xmax, &ymax);
+    double coteX = xmax -xmin;
+    double coteY = ymax - ymin;
+    double xc = coteX/2;
+    double yc = coteY/2;
+    ArbreQuat* aq = creerArbreQuat(xc,yc,coteX,coteY);
+    
+    // "on parcourt une a une chaque chaine"
+    CellChaine *tempC = C->chaines;
+    while(tempC){
+        CellPoint *tempP = tempC->points;
+
+        // premier noeud de la chaine
+        Noeud* n1 = rechercheCreeNoeudArbre(res, &aq, aq, tempP->x, tempP->y);
+
+        // "pour chaque point de la chaine"
+        while (tempP->suiv){
+            // noeud suivant
+            Noeud* n2 = rechercheCreeNoeudArbre(res, &aq, aq, tempP->suiv->x, tempP->suiv->y);
+            
+            if (rechercheVoisin(n1, n2) == 0){ // si n2 n'est pas deja dans la liste des voisins de n1
+                ajouterVoisin(n1, n2);
+                ajouterVoisin(n2, n1);
+            }
+
+            n1 = n2;
+            tempP = tempP->suiv;
+        }
+
+        // "on conserve la commodite de la chaine"        
+        CellCommodite* tempCom = (CellCommodite*)malloc(sizeof(CellCommodite));
+        if (tempCom != NULL) {
+            tempCom->extrA = n1;
+            tempCom->extrB = rechercheCreeNoeudArbre(res, &aq, aq, tempC->points->x, tempC->points->y);
+            tempCom->suiv = res->commodites;
+            res->commodites = tempCom;
+        } else {
+            printf("Erreur reconstitueReseauListe : échec malloc commodité\n");
+            return NULL;
+        }
+    
+        tempC = tempC->suiv;
+    }
+
+    return res;
 }
 
 /*

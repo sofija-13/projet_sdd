@@ -28,6 +28,7 @@ void insererNoeudArbre(Noeud* n, ArbreQuat** a, ArbreQuat* parent);
 Noeud* rechercheCreeNoeudArbre(Reseau* R, ArbreQuat** a, ArbreQuat* parent, double x, double y);
 //
 void insererNoeudsArbreDansReseau(ArbreQuat* arbre, Reseau** R);
+
 Reseau* reconstitueReseauArbre(Chaines* C);
 //
 

@@ -35,7 +35,7 @@ int main(int argc, char** argv){
         break;
 
     case 2: // arbre quaternaire
-        // R = reconstitueReseauArbre(c);
+        R = reconstitueReseauArbre(c);
         break;
     
     }
