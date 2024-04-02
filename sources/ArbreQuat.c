@@ -167,11 +167,13 @@ Reseau* reconstitueReseauArbre(Chaines* C){
     double xc = coteX/2;
     double yc = coteY/2;
     ArbreQuat* aq = creerArbreQuat(xc,yc,coteX,coteY);
+
     CellChaine* tempC = C->chaines;
     while(tempC){
         CellPoint* tempP = tempC->points;
         while(tempP){
             Noeud* noeud = rechercheCreeNoeudArbre(R,&aq,NULL,tempP->x,tempP->y);
+            insererNoeudArbre(noeud,&aq,NULL);
             tempP = tempP->suiv;
         }
         tempC = tempC->suiv;
