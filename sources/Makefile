@@ -3,8 +3,8 @@ all: ChaineMain ReconstitueReseau
 ReconstitueReseau: ReconstitueReseau.o Reseau.o Chaine.o SVGwriter.o Hachage.o ArbreQuat.o
 	gcc -Wall -o ReconstitueReseau ReconstitueReseau.o Reseau.o Chaine.o SVGwriter.o Hachage.o ArbreQuat.o -lm
 
-Hachage: Hachage.o Reseau.o SVGwriter.o
-	gcc -Wall -o Hachage Hachage.o Reseau.o Chaine.o SVGwriter.o
+# Hachage: Hachage.o Reseau.o SVGwriter.o
+# 	gcc -Wall -o Hachage Hachage.o Reseau.o Chaine.o SVGwriter.o
 
 Hachage.o: Hachage.c
 	gcc -Wall -c Hachage.c

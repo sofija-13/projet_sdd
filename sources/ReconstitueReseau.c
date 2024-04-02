@@ -5,6 +5,8 @@
 #include "Hachage.h"
 #include "ArbreQuat.h"
 
+#define TAILLE 100 // taille de la table de hachage
+
 int main(int argc, char** argv){
     
     if (argc != 3){
@@ -29,7 +31,7 @@ int main(int argc, char** argv){
         break;
     
     case 1: // table de hachage
-        // R = reconstitueReseauHachage(c, 100);
+        R = reconstitueReseauHachage(c, TAILLE);
         break;
 
     case 2: // arbre quaternaire

@@ -6,6 +6,11 @@
 #include "SVGwriter.h"
 
 Noeud* rechercheCreeNoeudListe(Reseau *R, double x, double y){
+    if (R==NULL){ // test validite arguments
+        printf("Erreur rechercheCreeNoeudListe : reseau NULL\n");
+        return NULL;
+    }
+
     CellNoeud *temp = R->noeuds;
     //recherche noeud de coordonnees (x,y)
     while(temp){
@@ -16,7 +21,7 @@ Noeud* rechercheCreeNoeudListe(Reseau *R, double x, double y){
     }
     
     //creation nouveau CellNoeud car absent
-    CellNoeud *nouveau = (CellNoeud*)malloc(sizeof(CellNoeud));
+    CellNoeud *nouveau = (CellNoeud*) malloc(sizeof(CellNoeud));
     nouveau->nd = (Noeud*)malloc(sizeof(Noeud));
     nouveau->nd->num = (R->nbNoeuds)+1;
     nouveau->nd->x = x;
@@ -31,16 +36,16 @@ Noeud* rechercheCreeNoeudListe(Reseau *R, double x, double y){
     return nouveau->nd;
 }
 
-int rechercheVoisin(Noeud *nd1, Noeud *nd2) {
+int rechercheVoisin(Noeud *nd1, Noeud *nd2){
     // test validite des arguments
-    if (nd1 == NULL || nd2 == NULL) {
+    if (nd1 == NULL || nd2 == NULL){
         printf("Erreur rechercheVoisin : argument NULL\n");
-        return -1; // Valeur de retour pour erreur
+        return -1;
     }
 
-    // Parcours de la liste des voisins de nd1 pour voir si nd2 est déjà voisin
+    // parcours de la liste des voisins de nd1 pour voir si nd2 est deja voisin
     CellNoeud *voisin = nd1->voisins;
-    while (voisin != NULL) {
+    while(voisin){
         if (voisin->nd == nd2) {
             return 1; // nd2 est voisin de nd1
         }
@@ -51,7 +56,7 @@ int rechercheVoisin(Noeud *nd1, Noeud *nd2) {
 }
 
 void ajouterVoisin(Noeud* noeud, Noeud* voisin) {
-    // Vérification de la validité des arguments
+    // test validite des arguments
     if (noeud == NULL || voisin == NULL) {
         printf("Erreur ajouterVoisin : argument NULL\n");
         return;
@@ -89,43 +94,40 @@ Reseau* reconstitueReseauListe(Chaines *C){
     res->commodites = NULL;
     
     // "on parcourt une a une chaque chaine"
-    CellChaine *temp = C->chaines;
-    while(temp){
-        // Vérification de l'existence de points dans la chaîne
-        if (temp->points) {
-            CellPoint *tempP = temp->points;
+    CellChaine *tempC = C->chaines;
+    while(tempC){
+        CellPoint *tempP = tempC->points;
 
-            // Création du premier noeud de la chaîne
-            Noeud* tempN1 = rechercheCreeNoeudListe(res, tempP->x, tempP->y);
+        // premier noeud de la chaine
+        Noeud* n1 = rechercheCreeNoeudListe(res, tempP->x, tempP->y);
 
-            // "pour chaque point de la chaine"
-            while (tempP->suiv) {
-                // Création du noeud suivant
-                Noeud* tempN2 = rechercheCreeNoeudListe(res, tempP->suiv->x, tempP->suiv->y);
-                
-                // Vérification de l'existence d'une commodité entre les deux noeuds
-                if (!rechercheVoisin(tempN1, tempN2)) {
-                    // Création des voisins pour chaque noeud
-                    ajouterVoisin(tempN1, tempN2);
-                    ajouterVoisin(tempN2, tempN1);
-                }
-
-                tempN1 = tempN2;
-                tempP = tempP->suiv;
+        // "pour chaque point de la chaine"
+        while (tempP->suiv){
+            // noeud suivant
+            Noeud* n2 = rechercheCreeNoeudListe(res, tempP->suiv->x, tempP->suiv->y);
+            
+            if (rechercheVoisin(n1, n2) == 0){ // si n2 n'est pas deja dans la liste des voisins de n1
+                ajouterVoisin(n1, n2);
+                ajouterVoisin(n2, n1);
             }
 
-            // Création de la commodité entre le premier et le dernier noeud de la chaîne
-            CellCommodite* tempC = (CellCommodite*)malloc(sizeof(CellCommodite));
-            if (tempC != NULL) {
-                tempC->extrA = tempN1;
-                tempC->extrB = rechercheCreeNoeudListe(res, temp->points->x, temp->points->y);
-                tempC->suiv = res->commodites;
-                res->commodites = tempC;
-            } else {
-                printf("Erreur d'allocation de mémoire pour la commodité\n");
-            }
+            n1 = n2;
+            tempP = tempP->suiv;
         }
-        temp = temp->suiv;
+
+        // "on conserve la commodite de la chaine"        
+        CellCommodite* tempCom = (CellCommodite*)malloc(sizeof(CellCommodite));
+        if (tempCom != NULL) {
+            tempCom->extrA = n1;
+            tempCom->extrB = rechercheCreeNoeudListe(res, tempC->points->x, tempC->points->y);
+            tempCom->suiv = res->commodites;
+            res->commodites = tempCom;
+        } else {
+            printf("Erreur reconstitueReseauListe : échec malloc commodité\n");
+            return NULL;
+        }
+    
+        tempC = tempC->suiv;
     }
 
     return res;

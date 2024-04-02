@@ -14,7 +14,7 @@ double clef(double x, double y);
 int hachage(double k, int m);
 // renvoie l'index de la table de hachage associe a la clef k
 
-void ajoutNoeudHachage(TableHachage* H, double x, double y, int num);
+void ajoutNoeudHachage(TableHachage* H, Noeud* nv);
 // ajoute un nouveau noeud de coordonnees (x,y) dans la table de hachage H
 
 Noeud* rechercheCreeNoeudHachage(Reseau* R, TableHachage* H, double x, double y);
