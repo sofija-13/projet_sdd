@@ -141,6 +141,44 @@ Noeud* rechercheCreeNoeudArbre(Reseau* R, ArbreQuat** a, ArbreQuat* parent, doub
     return NULL; // Retourne NULL par défaut (cas improbable)
 }
 
+Reseau* reconstitueReseauArbre(Chaines* C){
+    if(C == NULL || C->nbChaines){
+        printf("La chaine est vide \n");
+        return NULL;
+    }
+
+    Reseau* R = (Reseau*)malloc(sizeof(Reseau));
+    if (R == NULL) {
+        printf("malloc pas marché\n");
+        return NULL;
+    }
+    R->nbNoeuds = 0;
+    R->gamma = C->gamma;
+    R->noeuds = NULL;
+    R->commodites = NULL;
+
+    double* xmin;
+    double* ymin; 
+    double* xmax;
+    double* ymax;
+    chaineCoordMinMax(C, &xmin, &ymin, &xmax, &ymax);
+    double coteX = xmax -xmin;
+    double coteY = ymax - ymin;
+    double xc = coteX/2;
+    double yc = coteY/2;
+    ArbreQuat* aq = creerArbreQuat(xc,yc,coteX,coteY);
+    CellChaine* tempC = C->chaines;
+    while(tempC){
+        CellPoint* tempP = tempC->points;
+        while(tempP){
+            Noeud* noeud = rechercheCreeNoeudArbre(R,&aq,NULL,tempP->x,tempP->y);
+            tempP = tempP->suiv;
+        }
+        tempC = tempC->suiv;
+    }
+}
+
+/*
 void ajouterCommoditeNoeuds(CellCommodite** commodites, Noeud* extrA, Noeud* extrB) {
     // Création d'une nouvelle commodité
     CellCommodite* nouvelleCommodite = (CellCommodite*)malloc(sizeof(CellCommodite));
@@ -231,7 +269,7 @@ Reseau* reconstitueReseauArbre(Chaines* C) {
 
     return R; // Retour du réseau reconstruit
 }
-
+*/
 
 void libererArbreQuaternaire(ArbreQuat* a) {
     if (a == NULL) {
