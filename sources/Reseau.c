@@ -73,8 +73,8 @@ void ajouterVoisin(Noeud* noeud, Noeud* voisin) {
 }
 
 Reseau* reconstitueReseauListe(Chaines *C){
-    if (C == NULL) { // test validite des arguments
-        printf("Erreur reconstitueReseauListe : argument NULL\n");
+    if (C == NULL || C->nbChaines == 0) { // test validite des arguments
+        printf("Erreur reconstitueReseauListe : C == NULL ou 0 chaine\n");
         return NULL;
     }
     // nouveau reseau
@@ -88,9 +88,9 @@ Reseau* reconstitueReseauListe(Chaines *C){
     res->noeuds = NULL;
     res->commodites = NULL;
     
-    // on parcourt une a une chaque chaine
+    // "on parcourt une a une chaque chaine"
     CellChaine *temp = C->chaines;
-    while (temp) {
+    while(temp){
         // Vérification de l'existence de points dans la chaîne
         if (temp->points) {
             CellPoint *tempP = temp->points;
@@ -98,7 +98,7 @@ Reseau* reconstitueReseauListe(Chaines *C){
             // Création du premier noeud de la chaîne
             Noeud* tempN1 = rechercheCreeNoeudListe(res, tempP->x, tempP->y);
 
-            //pour chaque point de la chaine
+            // "pour chaque point de la chaine"
             while (tempP->suiv) {
                 // Création du noeud suivant
                 Noeud* tempN2 = rechercheCreeNoeudListe(res, tempP->suiv->x, tempP->suiv->y);

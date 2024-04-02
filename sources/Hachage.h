@@ -3,7 +3,7 @@
 #include "Reseau.h"
 
 typedef struct{
-  int nbElement; //pas necessaire ici
+  // int nbElement; //pas necessaire ici
   int tailleMax;
   CellNoeud** T;
 } TableHachage ;
@@ -19,6 +19,12 @@ void ajoutNoeudHachage(TableHachage* H, double x, double y, int num);
 
 Noeud* rechercheCreeNoeudHachage(Reseau* R, TableHachage* H, double x, double y);
 // retourne un Noeud du reseau R correspondant au point (x,y) dans la table de hachage H (ajoute si inexistant)
+
+void liberer_hachage(TableHachage* H);
+// libere la memoire allouee pour une TableHachage*
+
+void liberer_noeud(CellNoeud* n);
+// libere la memoire allouee pour un CellNoeud*
 
 Reseau* reconstitueReseauHachage(Chaines *C, int M);
 // reconstruit le reseau a partir de la liste des chaines C, en utilisant une table de hachage H de taille M
