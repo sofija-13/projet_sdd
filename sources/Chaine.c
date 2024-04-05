@@ -16,19 +16,19 @@ Chaines* lectureChaines(FILE *f) {
 
     Chaines *nv = (Chaines*)malloc(sizeof(Chaines));
     if (nv == NULL) {
-        printf("Erreur d'allocation de memoire dans lectureChaines\n");
+        printf("Erreur malloc dans lectureChaines\n");
         return NULL;
     }
 
     fscanf(f, "NbChain: %d\n", &(nv->nbChaines));
     fscanf(f, "Gamma: %d\n", &(nv->gamma));
 
-    nv->chaines = NULL;  // Initialisation de la liste des chaines à NULL
+    nv->chaines = NULL;  // initialisation de la liste des chaines
 
     for (int i = 0; i < nv->nbChaines; i++) {
         CellChaine *c = (CellChaine*)malloc(sizeof(CellChaine));
         if (c == NULL) {
-            printf("Erreur d'allocation de mémoire\n");
+            printf("Erreur malloc dans lectureChaines\n");
             return NULL;
         }
         fscanf(f, "%d", &(c->numero));

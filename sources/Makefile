@@ -1,4 +1,10 @@
-all: ChaineMain ReconstitueReseau 
+all: ChaineMain ReconstitueReseau Calcul
+
+Calcul: Calcul.o Reseau.o Chaine.o SVGwriter.o Hachage.o ArbreQuat.o
+	gcc -Wall -o Calcul Calcul.o Reseau.o Chaine.o SVGwriter.o Hachage.o ArbreQuat.o -lm
+
+Calcul.o: Calcul.c
+	gcc -Wall -c Calcul.c
 
 ReconstitueReseau: ReconstitueReseau.o Reseau.o Chaine.o SVGwriter.o Hachage.o ArbreQuat.o
 	gcc -Wall -o ReconstitueReseau ReconstitueReseau.o Reseau.o Chaine.o SVGwriter.o Hachage.o ArbreQuat.o -lm
@@ -31,4 +37,4 @@ SVGwriter.o: SVGwriter.c
 	gcc -Wall -c SVGwriter.c
 
 clean:
-	rm *.o *.html ChaineMain ReconstitueReseau *test* Hachage
+	rm *.o *.html ChaineMain ReconstitueReseau *test* Hachage Calcul temps_calcul.csv
