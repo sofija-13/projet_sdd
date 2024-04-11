@@ -140,45 +140,7 @@ Noeud* rechercheCreeNoeudArbre(Reseau* R, ArbreQuat** a, ArbreQuat* parent, doub
 
     return NULL; // Retourne NULL par défaut (cas improbable)
 }
-/*
-Reseau* reconstitueReseauArbre(Chaines* C){
-    if(C == NULL || C->nbChaines){
-        printf("La chaine est vide \n");
-        return NULL;
-    }
 
-    Reseau* R = (Reseau*)malloc(sizeof(Reseau));
-    if (R == NULL) {
-        printf("malloc pas marché\n");
-        return NULL;
-    }
-    R->nbNoeuds = 0;
-    R->gamma = C->gamma;
-    R->noeuds = NULL;
-    R->commodites = NULL;
-
-    double* xmin;
-    double* ymin; 
-    double* xmax;
-    double* ymax;
-    chaineCoordMinMax(C, &xmin, &ymin, &xmax, &ymax);
-    double coteX = xmax -xmin;
-    double coteY = ymax - ymin;
-    double xc = coteX/2;
-    double yc = coteY/2;
-    ArbreQuat* aq = creerArbreQuat(xc,yc,coteX,coteY);
-
-    CellChaine* tempC = C->chaines;
-    while(tempC){
-        CellPoint* tempP = tempC->points;
-        while(tempP){
-            Noeud* noeud = rechercheCreeNoeudArbre(R,&aq,NULL,tempP->x,tempP->y);
-            insererNoeudArbre(noeud,&aq,NULL);
-            tempP = tempP->suiv;
-        }
-        tempC = tempC->suiv;
-    }
-}*/
 
 Reseau* reconstitueReseauArbre(Chaines *C){
     if (C == NULL || C->nbChaines == 0) { // test validite des arguments
@@ -247,98 +209,7 @@ Reseau* reconstitueReseauArbre(Chaines *C){
     return res;
 }
 
-/*
-void ajouterCommoditeNoeuds(CellCommodite** commodites, Noeud* extrA, Noeud* extrB) {
-    // Création d'une nouvelle commodité
-    CellCommodite* nouvelleCommodite = (CellCommodite*)malloc(sizeof(CellCommodite));
-    nouvelleCommodite->extrA = extrA;
-    nouvelleCommodite->extrB = extrB;
-    nouvelleCommodite->suiv = NULL;
 
-    // Ajout de la commodité à la liste
-    if (*commodites == NULL) {
-        *commodites = nouvelleCommodite;
-    } else {
-        CellCommodite* temp = *commodites;
-        while (temp->suiv != NULL) {
-            temp = temp->suiv;
-        }
-        temp->suiv = nouvelleCommodite;
-    }
-}
-
-void rechercherAjouterCommoditesArbre(CellCommodite** commodites, ArbreQuat* arbre, CellPoint* points, Reseau* R) {
-    // Parcours de chaque point de la chaîne
-    CellPoint* point = points;
-    while (point != NULL) {
-        // Recherche du nœud correspondant au point dans l'arbre quaternaire
-        Noeud* noeud = rechercheCreeNoeudArbre(R, &arbre, NULL, point->x, point->y);
-        if (noeud != NULL) {
-            // Ajout du nœud à la liste des nœuds du réseau
-            ajouterCommoditeNoeuds(commodites, noeud, noeud);
-        }
-        point = point->suiv;
-    }
-}
-
-void rechercherAjouterCommoditesReseau(Reseau* R, Chaines* C) {
-    if (R == NULL || C == NULL || C->chaines == NULL) {
-        return;
-    }
-
-    // Parcours de chaque chaîne
-    CellChaine* tempC = C->chaines;
-    while (tempC != NULL) {
-        // Rechercher et ajouter les commodités pour chaque chaîne
-        rechercherAjouterCommoditesArbre(&(R->commodites), NULL, tempC->points, R);
-        tempC = tempC->suiv;
-    }
-}
-
-
-Reseau* reconstitueReseauArbre(Chaines* C) {
-    if (C == NULL || C->nbChaines == 0) {
-        printf("PPPPPPPPPPPPPPPPPPPPPPPPPPPPP\n");
-        return NULL; // Si la liste des chaînes est vide, retourner NULL
-    }
-
-    // Création du réseau
-    Reseau* R = (Reseau*)malloc(sizeof(Reseau));
-    R->nbNoeuds = 0; // Initialisation du nombre de nœuds à zéro
-    R->gamma = 0; // Initialisation du nombre maximal de fibres par câble à zéro
-    R->noeuds = NULL; // Initialisation de la liste des nœuds à NULL
-    R->commodites = NULL; // Initialisation de la liste des commodités à NULL
-    
-    // Création de l'arbre quaternaire
-    ArbreQuat* arbre = NULL;
-    
-    // Parcours de chaque chaîne
-    CellChaine* tempC = C->chaines;
-    while (tempC) {
-        // Parcours de chaque point de la chaîne
-        CellPoint* point = tempC->points;
-        while (point) {
-            // Recherche ou création du nœud correspondant au point dans l'arbre quaternaire
-            Noeud* noeud = rechercheCreeNoeudArbre(R, &arbre, NULL, point->x, point->y);
-            // Ajout du nœud à la liste des noeuds du réseau
-            CellNoeud* nouveauNoeud = (CellNoeud*)malloc(sizeof(CellNoeud));
-            nouveauNoeud->nd = noeud;
-            nouveauNoeud->suiv = R->noeuds;
-            R->noeuds = nouveauNoeud;
-            point = point->suiv; // Passage au point suivant dans la chaîne
-        }
-        tempC = tempC->suiv; // Passage à la chaîne suivante
-    }
-
-    // Recherche et ajout des commodités associées aux extrémités des chaînes
-    rechercherAjouterCommoditesReseau(R, C);
-
-
-    
-
-    return R; // Retour du réseau reconstruit
-}
-*/
 
 void libererArbreQuaternaire(ArbreQuat* a) {
     if (a == NULL) {
