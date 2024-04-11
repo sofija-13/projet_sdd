@@ -77,6 +77,7 @@ void insererNoeudArbre(Noeud* n, ArbreQuat** a, ArbreQuat* parent){
         coteY = parent->coteY / 2;
 
         creerArbreQuat(xc, yc, coteX, coteY);
+        return;
     }
 
     else if ((*a)->noeud != NULL) { // Cas d'une feuille
