@@ -13,8 +13,10 @@ int hachage(double k, int m){
     double x = k * a - (int)(k * a);
     return (int)(x*m);
 } 
+
 /* c'est la meme que celle du projet precedent,
 attendre correction mini-projet pour valider */
+
 
 TableHachage* creer_hachage(int m){
     TableHachage* H = (TableHachage*) malloc(sizeof(TableHachage));
@@ -122,15 +124,35 @@ void liberer_hachage(TableHachage* H){
     free(H);
 }
 
+void liberer_table_hachage(TableHachage* H) {
+    if (H == NULL) {
+        printf("Erreur liberer_table_hachage : la table de hachage est NULL\n");
+        return;
+    }
+    // Libération de chaque liste chainée de la table de hachage
+    for (int i = 0; i < H->tailleMax; i++) {
+        CellNoeud *courant = H->T[i];
+        while (courant != NULL) {
+            CellNoeud *suivant = courant->suiv;
+            free(courant);
+            courant = suivant;
+        }
+    }
+    // Libération du tableau de pointeurs
+    free(H->T);
+    // Libération de la structure TableHachage
+    free(H);
+}
+
 Reseau* reconstitueReseauHachage(Chaines *C, int M){
     if (C == NULL || C->nbChaines == 0) { // test validite des arguments
-        printf("Erreur reconstitueReseauListe : C == NULL ou 0 chaine\n");
+        printf("Erreur reconstitueReseauHachage : C == NULL ou 0 chaine\n");
         return NULL;
     }
     // nouveau reseau
     Reseau* res = (Reseau*)malloc(sizeof(Reseau));
     if (res == NULL) {
-        printf("Erreur reconstitueReseauListe: erreur malloc pour nouveau reseau\n");
+        printf("Erreur reconstitueReseauHachage: erreur malloc pour nouveau reseau\n");
         return NULL;
     }
     res->nbNoeuds = 0;
@@ -171,12 +193,14 @@ Reseau* reconstitueReseauHachage(Chaines *C, int M){
             tempCom->suiv = res->commodites;
             res->commodites = tempCom;
         } else {
-            printf("Erreur reconstitueReseauListe : échec malloc commodité\n");
+            printf("Erreur reconstitueReseauHachage : échec malloc commodité\n");
             return NULL;
         }
     
         tempC = tempC->suiv;
     }
+
+    liberer_table_hachage(H);
 
     return res;
 }

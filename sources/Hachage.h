@@ -26,6 +26,8 @@ void liberer_hachage(TableHachage* H);
 void liberer_noeud(CellNoeud* n);
 // libere la memoire allouee pour un CellNoeud*
 
+void liberer_table_hachage(TableHachage* H);
+
 Reseau* reconstitueReseauHachage(Chaines *C, int M);
 // reconstruit le reseau a partir de la liste des chaines C, en utilisant une table de hachage H de taille M
 
