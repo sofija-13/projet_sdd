@@ -5,39 +5,41 @@
 #include "ArbreQuat.h"
 #include "SVGwriter.h"
 
-void chaineCoordMinMax(Chaines* C, double* xmin, double* ymin, double* xmax, double* ymax){
-    if(C == NULL){
+void chaineCoordMinMax(Chaines* C, double* xmin, double* ymin, double* xmax, double* ymax) {
+    if (C == NULL) {
         printf("Chaine Vide \n");
         return;
     }
 
     CellChaine* temp = C->chaines;
     CellPoint* premier = C->chaines->points;
-    double Xmin = premier->x;
-    double Ymin = premier->y;
-    double Xmax = premier->x;
-    double Ymax = premier->y;
-    while(temp){
+    *xmin = premier->x;
+    *ymin = premier->y;
+    *xmax = premier->x;
+    *ymax = premier->y;
+    while (temp) {
         CellPoint* p = temp->points;
-        while(p){
-            //si coordonnées plus petit que Xmin et Ymin
-            if (p->x < Xmin && p->y < Ymin){
-                Xmin = p->x;
-                Ymin = p->y;
-            }
-            //si coordonnées plus grand que Xmax et Ymax
-            else if (p->x > Xmax && p->y > Ymax){
-                Xmax = p->x;
-                Ymax = p->y;
-            }
+        while (p) {
+            if (p->x < *xmin){
+                *xmin = p->x;
+            } 
+            if (p->y < *ymin){
+                *ymin = p->y;
+            } 
+            if (p->x > *xmax){
+                *xmax = p->x;
+            } 
+            if (p->y > *ymax){
+                *ymax = p->y;
+            } 
             p = p->suiv;
         }
         temp = temp->suiv;
     }
-
 }
 
-ArbreQuat* creerArbreQuat(double xc, double yc, double coteX, double coteY){
+ArbreQuat* creerArbreQuat(double xc, double yc, double coteX, double coteY) {
+
     ArbreQuat* aq = (ArbreQuat*)malloc(sizeof(ArbreQuat));
 
     aq->xc = xc;
@@ -45,15 +47,17 @@ ArbreQuat* creerArbreQuat(double xc, double yc, double coteX, double coteY){
     aq->coteX = coteX;
     aq->coteY = coteY;
 
-    aq->noeud = NULL;           /* Pointeur vers le noeud du reseau */
-    aq->so = NULL;   /* Sous-arbre sud-ouest, pour x < xc et y < yc */
-    aq->se = NULL;   /* Sous-arbre sud-est, pour x >= xc et y < yc */
-    aq->no = NULL;   /* Sous-arbre nord-ouest, pour x < xc et y >= yc */
+    aq->noeud = NULL;
+    aq->so = NULL;
+    aq->se = NULL;
+    aq->no = NULL;
     aq->ne = NULL;
 
     return aq;
 }
+/*      Version qui fonctionne mais qui provoque beaucoup d'erreur         */
 
+/*
 void insererNoeudArbre(Noeud* n, ArbreQuat** a, ArbreQuat* parent){
 
     if (*a == NULL){
@@ -145,13 +149,13 @@ Noeud* rechercheCreeNoeudArbre(Reseau* R, ArbreQuat** a, ArbreQuat* parent, doub
 
 Reseau* reconstitueReseauArbre(Chaines *C){
     if (C == NULL || C->nbChaines == 0) { // test validite des arguments
-        printf("Erreur reconstitueReseauListe : C == NULL ou 0 chaine\n");
+        printf("Erreur reconstitueReseauArbre : C == NULL ou 0 chaine\n");
         return NULL;
     }
     // nouveau reseau
     Reseau* res = (Reseau*)malloc(sizeof(Reseau));
     if (res == NULL) {
-        printf("Erreur reconstitueReseauListe: erreur malloc pour nouveau reseau\n");
+        printf("Erreur reconstitueReseauArbre: erreur malloc pour nouveau reseau\n");
         return NULL;
     }
     res->nbNoeuds = 0;
@@ -201,31 +205,179 @@ Reseau* reconstitueReseauArbre(Chaines *C){
             tempCom->suiv = res->commodites;
             res->commodites = tempCom;
         } else {
-            printf("Erreur reconstitueReseauListe : échec malloc commodité\n");
+            printf("Erreur reconstitueReseauArbre : échec malloc commodité\n");
             return NULL;
         }
     
         tempC = tempC->suiv;
     }
+
+    libererArbreQuaternaire(aq);
+
     return res;
 }
+*/
 
 
+/*      Version qui fonctionne mais qui provoque aucune erreur mais à un paramètre en moins         */
+
+void insererNoeudArbre(Noeud* n, ArbreQuat** a) {
+    if (*a == NULL) {
+        double xc, yc, coteX, coteY;
+        xc = (*a)->xc;
+        yc = (*a)->yc;
+        coteX = (*a)->coteX;
+        coteY = (*a)->coteY;
+
+        if (n->x < xc && n->y < yc) {
+            xc -= coteX / 4;
+            yc -= coteY / 4;
+        } else if (n->x >= xc && n->y < yc) {
+            xc += coteX / 4;
+            yc -= coteY / 4;
+        } else if (n->x < xc && n->y >= yc) {
+            xc -= coteX / 4;
+            yc += coteY / 4;
+        } else {
+            xc += coteX / 4;
+            yc += coteY / 4;
+        }
+        coteX /= 2;
+        coteY /= 2;
+
+        *a = creerArbreQuat(xc, yc, coteX, coteY);
+        if (*a == NULL) {
+            printf("Erreur lors de l'insertion du noeud dans l'arbre\n");
+            return;
+        }
+    }
+
+    if ((*a)->noeud != NULL) {
+        insererNoeudArbre((*a)->noeud, a);
+        insererNoeudArbre(n, a);
+        (*a)->noeud = NULL;
+    } else {
+        ArbreQuat* sous_arbre = NULL;
+        if (n->x < (*a)->xc && n->y < (*a)->yc) {
+            sous_arbre = (*a)->so;
+        } else if (n->x >= (*a)->xc && n->y < (*a)->yc) {
+            sous_arbre = (*a)->se;
+        } else if (n->x < (*a)->xc && n->y >= (*a)->yc) {
+            sous_arbre = (*a)->no;
+        } else {
+            sous_arbre = (*a)->ne;
+        }
+        insererNoeudArbre(n, &sous_arbre);
+    }
+}
+
+Noeud* rechercheCreeNoeudArbre(Reseau* R, ArbreQuat** a, double x, double y) {
+    if (*a == NULL) {
+        *a = creerArbreQuat(x, y, 0, 0);
+        if (*a == NULL) {
+            printf("Erreur lors de la création de l'arbre\n");
+            return NULL;
+        }
+        return rechercheCreeNoeudListe(R, x, y);
+    }
+
+    if ((*a)->noeud != NULL) {
+        if ((*a)->noeud->x == x && (*a)->noeud->y == y) {
+            return (*a)->noeud;
+        }
+        Noeud* n = rechercheCreeNoeudListe(R, x, y);
+        insererNoeudArbre(n, a);
+        return n;
+    }
+
+    if (x < (*a)->xc && y < (*a)->yc) {
+        return rechercheCreeNoeudArbre(R, &((*a)->so), x, y);
+    } else if (x >= (*a)->xc && y < (*a)->yc) {
+        return rechercheCreeNoeudArbre(R, &((*a)->se), x, y);
+    } else if (x < (*a)->xc && y >= (*a)->yc) {
+        return rechercheCreeNoeudArbre(R, &((*a)->no), x, y);
+    } else {
+        return rechercheCreeNoeudArbre(R, &((*a)->ne), x, y);
+    }
+}
+
+Reseau* reconstitueReseauArbre(Chaines* C) {
+    if (C == NULL || C->nbChaines == 0) {
+        printf("Erreur reconstitueReseauArbre : C == NULL ou 0 chaine\n");
+        return NULL;
+    }
+
+    Reseau* res = (Reseau*)malloc(sizeof(Reseau));
+    if (res == NULL) {
+        printf("Erreur reconstitueReseauArbre: erreur malloc pour nouveau reseau\n");
+        return NULL;
+    }
+    res->nbNoeuds = 0;
+    res->gamma = C->gamma;
+    res->noeuds = NULL;
+    res->commodites = NULL;
+
+    // nouvel arbre quaternaire
+    double xmin, ymin, xmax, ymax;
+    chaineCoordMinMax(C, &xmin, &ymin, &xmax, &ymax);
+    double coteX = xmax - xmin;
+    double coteY = ymax - ymin;
+    double xc = coteX / 2;
+    double yc = coteY / 2;
+    ArbreQuat* aq = creerArbreQuat(xc, yc, coteX, coteY);
+
+    CellChaine* tempC = C->chaines;
+    while (tempC) {
+        CellPoint* tempP = tempC->points;
+
+        // premier noeud de la chaine
+        Noeud* n1 = rechercheCreeNoeudArbre(res, &aq, tempP->x, tempP->y);
+
+        // "pour chaque point de la chaine"
+        while (tempP->suiv) {
+            // noeud suivant
+            Noeud* n2 = rechercheCreeNoeudArbre(res, &aq, tempP->suiv->x, tempP->suiv->y);
+
+            if (rechercheVoisin(n1, n2) == 0) {
+                ajouterVoisin(n1, n2);
+                ajouterVoisin(n2, n1);
+            }
+
+            n1 = n2;
+            tempP = tempP->suiv;
+        }
+
+        // "on conserve la commodite de la chaine"  
+        CellCommodite* tempCom = (CellCommodite*)malloc(sizeof(CellCommodite));
+        if (tempCom != NULL) {
+            tempCom->extrA = n1;
+            tempCom->extrB = rechercheCreeNoeudArbre(res, &aq, tempC->points->x, tempC->points->y);
+            tempCom->suiv = res->commodites;
+            res->commodites = tempCom;
+        } else {
+            printf("Erreur reconstitueReseauArbre : échec malloc commodité\n");
+            return NULL;
+        }
+
+        tempC = tempC->suiv;
+    }
+
+    libererArbreQuaternaire(aq);
+
+    return res;
+}
 
 void libererArbreQuaternaire(ArbreQuat* a) {
     if (a == NULL) {
         return;
     }
 
-    // Libérer récursivement les sous-arbres
     libererArbreQuaternaire(a->so);
     libererArbreQuaternaire(a->se);
     libererArbreQuaternaire(a->no);
     libererArbreQuaternaire(a->ne);
 
-    // Libérer la mémoire du nœud (si présent)
     if (a->noeud != NULL) {
-        // Libérer la liste des voisins (si présente)
         CellNoeud* current_voisin = a->noeud->voisins;
         while (current_voisin != NULL) {
             CellNoeud* temp = current_voisin;
@@ -235,6 +387,5 @@ void libererArbreQuaternaire(ArbreQuat* a) {
         free(a->noeud);
     }
 
-    // Libérer la mémoire de l'arbre
     free(a);
 }

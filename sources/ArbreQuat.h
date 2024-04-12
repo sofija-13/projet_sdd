@@ -22,10 +22,14 @@ ArbreQuat* creerArbreQuat(double xc, double yc, double coteX, double coteY);
 coteX et de hauteur coteY. Cette fonction initialisera le nœud du réseau, les arbres nord-ouest, nord-
 est, sud-ouest et sud-est à NULL.*/
 
-void insererNoeudArbre(Noeud* n, ArbreQuat** a, ArbreQuat* parent);
-//
+/*      Version qui fonctionne mais qui provoque aucune erreur mais à un paramètre en moins         */
+void insererNoeudArbre(Noeud* n, ArbreQuat** a);
+Noeud* rechercheCreeNoeudArbre(Reseau* R, ArbreQuat** a, double x, double y);
 
-Noeud* rechercheCreeNoeudArbre(Reseau* R, ArbreQuat** a, ArbreQuat* parent, double x, double y);
+/*      Version qui fonctionne mais qui provoque des erreurs         */
+//void insererNoeudArbre(Noeud* n, ArbreQuat** a, ArbreQuat *parent);
+//Noeud* rechercheCreeNoeudArbre(Reseau* R, ArbreQuat** a, ArbreQuat *parent, double x, double y);
+
 //
 void insererNoeudsArbreDansReseau(ArbreQuat* arbre, Reseau** R);
 
