@@ -37,4 +37,4 @@ SVGwriter.o: SVGwriter.c
 	gcc -Wall -c SVGwriter.c
 
 clean:
-	rm *.o *.html ChaineMain ReconstitueReseau *test* Hachage Calcul temps_calcul.csv
+	rm *.o *.html ChaineMain ReconstitueReseau *test* Hachage Calcul *temps*

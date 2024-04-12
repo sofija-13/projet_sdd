@@ -16,6 +16,7 @@
 #define TAILLE 100 // taille max de la table de hachage
 
 Chaines* generationAleatoire(int nbChaines, int nbPointsChaine, int xmax, int ymax){
+    
     /* permet de creer des chaines de points situes entre les points (0,0) et (xmax,ymax)
     nbChaines : nombre de chaines a creer
     nbPointsChaine : nombre de points par chaine*/
@@ -74,7 +75,7 @@ int main(){
     return 0;
 }
 */
-
+/*
 int main(int argc, char** argv){
     if (argc != 2){
         printf("Usage : %s <méthode de test> \n", argv[0]);
@@ -112,13 +113,13 @@ int main(int argc, char** argv){
         R = reconstitueReseauHachage(c, TAILLE);
         temps_final = clock();
         double temps_cpu2 = ((double)(temps_final - temps_initial)) / CLOCKS_PER_SEC;
-
+        
         // arbre quaternaire
         temps_initial = clock();
         R = reconstitueReseauArbre(c);
         temps_final = clock();
         double temps_cpu3 = ((double)(temps_final - temps_initial)) / CLOCKS_PER_SEC;
-        
+
         // ecriture valeurs calculees dans fichier
         fprintf(f,"%lf %lf %lf\n", temps_cpu, temps_cpu2, temps_cpu3);
         fclose(f);
@@ -161,10 +162,153 @@ int main(int argc, char** argv){
             liberer_chaines(c);
         }
         fclose(f);
+        
+
     }
 
     // liberation memoire allouee pour Reseau 
     liberer_reseau(R);
 
+    return 0;
+}*/
+/*    pas de problème avec valgrind pour le cas 0      */
+/*    Plus on augmente la taille de la table de hachage et plus elle prend de temps à se terminer*/
+/*int main(){
+    srand(time(NULL));
+    Reseau* R = NULL;
+    FILE* f = NULL;
+    clock_t temps_initial = clock();
+    clock_t temps_final = clock();
+
+    // creation chaine a partir du fichier
+    f = fopen("00014_burma.cha", "r");
+    Chaines* c = lectureChaines(f);
+    fclose(f);
+
+    f = fopen("temps_fichier.txt","w");
+    fprintf(f, "liste_chainee, table_hachage, arbre_quaternaire\n");
+        
+    // liste chainee
+    temps_initial = clock();
+    R = reconstitueReseauListe(c);
+    temps_final = clock();
+    double temps_cpu = ((double)(temps_final - temps_initial)) / CLOCKS_PER_SEC;
+    liberer_reseau(R);
+
+    // table de hachage 
+    temps_initial = clock();
+    R = reconstitueReseauHachage(c, TAILLE);
+    temps_final = clock();
+    double temps_cpu2 = ((double)(temps_final - temps_initial)) / CLOCKS_PER_SEC;
+    liberer_reseau(R);
+
+    // arbre quaternaire
+    temps_initial = clock();
+    R = reconstitueReseauArbre(c);
+    temps_final = clock();
+    double temps_cpu3 = ((double)(temps_final - temps_initial)) / CLOCKS_PER_SEC;
+
+    // ecriture valeurs calculees dans fichier
+    fprintf(f,"%lf %lf %lf\n", temps_cpu, temps_cpu2, temps_cpu3);
+    fclose(f);
+    // liberation memoire allouee pour Chaines*
+    liberer_chaines(c);
+    liberer_reseau(R);
+*/
+    /*     Quand la chaine est généré aléatoirement       */
+/*
+    // ouverture et ecriture 1ere ligne dans le fichier de sortie
+    f = fopen("temps_calcul.csv","w"); // fichier pour table de hachage et arbre quaternaire
+    fprintf(f, "# nbPointsTotal, liste_chainee, table_hachage, arbre_quaternaire\n");
+
+    // evaluation des temps de calcul
+    for (int i=500; i<=5000; i+=500){
+        Chaines* c = generationAleatoire(i, NB_POINTS_CHAINE, X_MAX, Y_MAX);
+
+        // liste chainee
+        temps_initial = clock();
+        R = reconstitueReseauListe(c);
+        temps_final = clock();
+        double temps_cpu = ((double)(temps_final - temps_initial)) / CLOCKS_PER_SEC;
+        liberer_reseau(R);
+
+        // table de hachage ------------------------ FAIRE VARIER LA TAILLE DE LA TABLE !! --------------
+        temps_initial = clock();
+        R = reconstitueReseauHachage(c, TAILLE);
+        temps_final = clock();
+        double temps_cpu2 = ((double)(temps_final - temps_initial)) / CLOCKS_PER_SEC;
+        liberer_reseau(R);
+        
+        // arbre quaternaire
+        temps_initial = clock();
+        R = reconstitueReseauArbre(c);
+        temps_final = clock();
+        double temps_cpu3 = ((double)(temps_final - temps_initial)) / CLOCKS_PER_SEC;
+        liberer_reseau(R);
+
+        // ecriture dans fichier
+        fprintf(f,"%d %lf %lf %lf\n", i*NB_POINTS_CHAINE, temps_cpu, temps_cpu2, temps_cpu3);
+        liberer_chaines(c);
+    }
+    fclose(f);
+    return 0;
+}*/
+
+int main(){
+    srand(time(NULL));
+    Reseau* R = NULL;
+    FILE* f = NULL;
+    clock_t temps_initial = clock();
+    clock_t temps_final = clock();
+
+    // creation chaine a partir du fichier
+    f = fopen("00014_burma.cha", "r");
+    Chaines* c = lectureChaines(f);
+    fclose(f);
+
+    /*  Taille de la table de Hachage varie  */
+
+    f = fopen("temps_fichier2.txt","w");
+    fprintf(f, "taille table_hachage\n");
+
+    // table de hachage 
+    
+    for(int j = 10; j<500000; j+=10000){
+        temps_initial = clock();
+        R = reconstitueReseauHachage(c, j);
+        temps_final = clock();
+        double temps_cpu = ((double)(temps_final - temps_initial)) / CLOCKS_PER_SEC;
+        liberer_reseau(R);
+        // ecriture valeurs calculees dans fichier
+        fprintf(f,"%d %lf \n",j, temps_cpu);
+    }
+    
+    fclose(f);
+    // liberation memoire allouee pour Chaines*
+    liberer_chaines(c);
+
+    
+    // ouverture et ecriture 1ere ligne dans le fichier de sortie
+    f = fopen("temps_calcul2.csv","w"); // fichier pour table de hachage et arbre quaternaire
+    fprintf(f, " nbPointsTotal taille liste_chainee, table_hachage, arbre_quaternaire\n");
+
+    // evaluation des temps de calcul
+    for (int i=500; i<=5000; i+=500){
+        Chaines* c = generationAleatoire(i, NB_POINTS_CHAINE, X_MAX, Y_MAX);
+
+
+        // table de hachage ------------------------ FAIRE VARIER LA TAILLE DE LA TABLE !! --------------
+        temps_initial = clock();
+        R = reconstitueReseauHachage(c, i);
+        temps_final = clock();
+        double temps_cpu = ((double)(temps_final - temps_initial)) / CLOCKS_PER_SEC;
+        liberer_reseau(R);
+        
+
+        // ecriture dans fichier
+        fprintf(f,"%d %d %lf\n", i*NB_POINTS_CHAINE,i ,temps_cpu);
+        liberer_chaines(c);
+    }
+    fclose(f);
     return 0;
 }
