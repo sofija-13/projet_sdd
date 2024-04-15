@@ -55,41 +55,47 @@ ArbreQuat* creerArbreQuat(double xc, double yc, double coteX, double coteY) {
 
     return aq;
 }
-/*      Version qui fonctionne mais qui provoque beaucoup d'erreur         */
 
-/*
-void insererNoeudArbre(Noeud* n, ArbreQuat** a, ArbreQuat* parent){
-
-    if (*a == NULL){
+void insererNoeudArbre(Noeud* n, ArbreQuat** a, ArbreQuat* parent) {
+    // Si l'arbre est vide, crée un nouvel arbre avec les coordonnées du nœud et ses dimensions divisées par deux.
+    if (*a == NULL) {
         double xc, yc, coteX, coteY;
-        // en fonction de parent et n, on déterminer les coordonnées du centre de la nouvelle cellule
-        if (n->x < parent->xc && n->y < parent->yc) {//sud-ouest
-            xc = parent->xc - parent->coteX / 4;
-            yc = parent->yc - parent->coteY / 4;
-        } else if (n->x >= parent->xc && n->y < parent->yc) {//sud-est
-            xc = parent->xc + parent->coteX / 4;
-            yc = parent->yc - parent->coteY / 4;
-        } else if (n->x < parent->xc && n->y >= parent->yc) {//nord-ouest
-            xc = parent->xc - parent->coteX / 4;
-            yc = parent->yc + parent->coteY / 4;
-        } else {// nord-est
-            xc = parent->xc + parent->coteX / 4;
-            yc = parent->yc + parent->coteY / 4;
-        }
-        // Les dimensions sont la moitié des dimensions du parent
+        
+        xc = parent->xc;
+        yc = parent->yc;
         coteX = parent->coteX / 2;
         coteY = parent->coteY / 2;
+        // Réorganise les coordonnées de l'arbre en fonction de la position du nœud.
+        if (n->x < xc && n->y < yc) {
+            xc -= coteX / 2;
+            yc -= coteY / 2;
+        } else if (n->x >= xc && n->y < yc) {
+            xc += coteX / 2;
+            yc -= coteY / 2;
+        } else if (n->x < xc && n->y >= yc) {
+            xc -= coteX / 2;
+            yc += coteY / 2;
+        } else {
+            xc += coteX / 2;
+            yc += coteY / 2;
+        }
+        
 
-        creerArbreQuat(xc, yc, coteX, coteY);
-        return;
+        // Crée un nouvel arbre avec les nouvelles coordonnées.
+        *a = creerArbreQuat(xc, yc, coteX, coteY);
+        if (*a == NULL) {
+            printf("Erreur lors de l'insertion du noeud dans l'arbre\n");
+            return;
+        }
     }
 
-    else if ((*a)->noeud != NULL) { // Cas d'une feuille
-        insererNoeudArbre((*a)->noeud, a, parent);
+    // Si l'arbre a déjà un nœud, insère récursivement le nœud actuel et le nœud passé en paramètre.
+    if ((*a)->noeud != NULL) {
+        insererNoeudArbre((*a)->noeud, a, *a);
         insererNoeudArbre(n, a, parent);
         (*a)->noeud = NULL;
-    } 
-    else { // Cas d'une cellule interne
+    } else {
+        // Sinon, recherche le sous-arbre approprié pour insérer le nœud.
         ArbreQuat* sous_arbre = NULL;
         if (n->x < (*a)->xc && n->y < (*a)->yc) {
             sous_arbre = (*a)->so;
@@ -100,50 +106,45 @@ void insererNoeudArbre(Noeud* n, ArbreQuat** a, ArbreQuat* parent){
         } else {
             sous_arbre = (*a)->ne;
         }
+        // Insère le nœud dans le sous-arbre trouvé.
         insererNoeudArbre(n, &sous_arbre, *a);
     }
-    
 }
 
+
 Noeud* rechercheCreeNoeudArbre(Reseau* R, ArbreQuat** a, ArbreQuat* parent, double x, double y) {
-    // Cas où l'arbre est vide
+    // Si l'arbre est vide, crée un nouvel arbre avec les coordonnées spécifiées.
     if (*a == NULL) {
-        // Création du nœud correspondant au point
-        Noeud* n = rechercheCreeNoeudListe(R, x, y);
-        insererNoeudArbre(n, a, parent); // Insérer le nouveau nœud dans l'arbre
-        return n; // Retourner le nouveau nœud créé
+        *a = creerArbreQuat(x, y, 0, 0);
+        if (*a == NULL) {
+            printf("Erreur lors de la création de l'arbre\n");
+            return NULL;
+        }
+        // Recherche ou crée le nœud correspondant dans la liste.
+        return rechercheCreeNoeudListe(R, x, y);
     }
 
-    // Cas où on est sur une feuille de l'arbre
+    // Si l'arbre a déjà un nœud aux mêmes coordonnées, le renvoie.
     if ((*a)->noeud != NULL) {
-        // Si le nœud correspond au point
         if ((*a)->noeud->x == x && (*a)->noeud->y == y) {
             return (*a)->noeud;
         }
-        // Sinon, créer et insérer le nouveau nœud
+        // Sinon, recherche ou crée le nœud correspondant dans l'arbre et insère le nœud actuel.
         Noeud* n = rechercheCreeNoeudListe(R, x, y);
-        insererNoeudArbre(n, a, parent); // Insérer le nouveau nœud dans l'arbre
-        return n; // Retourner le nouveau nœud créé
+        insererNoeudArbre(n, a, parent);
+        return n;
     }
 
-    // Cas où on est sur une cellule interne de l'arbre
-    if ((*a)->noeud == NULL) {
-        // Déterminer dans quelle cellule chercher le nœud du réseau
-        if (x < (*a)->xc && y < (*a)->yc) {
-            return rechercheCreeNoeudArbre(R, &((*a)->so), *a, x, y);
-        }
-        else if (x >= (*a)->xc && y < (*a)->yc) {
-            return rechercheCreeNoeudArbre(R, &((*a)->se), *a, x, y);
-        }
-        else if (x < (*a)->xc && y >= (*a)->yc) {
-            return rechercheCreeNoeudArbre(R, &((*a)->no), *a, x, y);
-        }
-        else if (x >= (*a)->xc && y >= (*a)->yc) {
-            return rechercheCreeNoeudArbre(R, &((*a)->ne), *a, x, y);
-        }
+    // Sinon, recherche le sous-arbre approprié pour continuer la recherche.
+    if (x < (*a)->xc && y < (*a)->yc) {
+        return rechercheCreeNoeudArbre(R, &((*a)->so), *a, x, y);
+    } else if (x >= (*a)->xc && y < (*a)->yc) {
+        return rechercheCreeNoeudArbre(R, &((*a)->se), *a, x, y);
+    } else if (x < (*a)->xc && y >= (*a)->yc) {
+        return rechercheCreeNoeudArbre(R, &((*a)->no), *a, x, y);
+    } else {
+        return rechercheCreeNoeudArbre(R, &((*a)->ne), *a, x, y);
     }
-
-    return NULL; // Retourne NULL par défaut (cas improbable)
 }
 
 
@@ -209,156 +210,6 @@ Reseau* reconstitueReseauArbre(Chaines *C){
             return NULL;
         }
     
-        tempC = tempC->suiv;
-    }
-
-    libererArbreQuaternaire(aq);
-
-    return res;
-}
-*/
-
-
-/*      Version qui fonctionne mais qui provoque aucune erreur mais à un paramètre en moins         */
-
-void insererNoeudArbre(Noeud* n, ArbreQuat** a) {
-    if (*a == NULL) {
-        double xc, yc, coteX, coteY;
-        xc = (*a)->xc;
-        yc = (*a)->yc;
-        coteX = (*a)->coteX;
-        coteY = (*a)->coteY;
-
-        if (n->x < xc && n->y < yc) {
-            xc -= coteX / 4;
-            yc -= coteY / 4;
-        } else if (n->x >= xc && n->y < yc) {
-            xc += coteX / 4;
-            yc -= coteY / 4;
-        } else if (n->x < xc && n->y >= yc) {
-            xc -= coteX / 4;
-            yc += coteY / 4;
-        } else {
-            xc += coteX / 4;
-            yc += coteY / 4;
-        }
-        coteX /= 2;
-        coteY /= 2;
-
-        *a = creerArbreQuat(xc, yc, coteX, coteY);
-        if (*a == NULL) {
-            printf("Erreur lors de l'insertion du noeud dans l'arbre\n");
-            return;
-        }
-    }
-
-    if ((*a)->noeud != NULL) {
-        insererNoeudArbre((*a)->noeud, a);
-        insererNoeudArbre(n, a);
-        (*a)->noeud = NULL;
-    } else {
-        ArbreQuat* sous_arbre = NULL;
-        if (n->x < (*a)->xc && n->y < (*a)->yc) {
-            sous_arbre = (*a)->so;
-        } else if (n->x >= (*a)->xc && n->y < (*a)->yc) {
-            sous_arbre = (*a)->se;
-        } else if (n->x < (*a)->xc && n->y >= (*a)->yc) {
-            sous_arbre = (*a)->no;
-        } else {
-            sous_arbre = (*a)->ne;
-        }
-        insererNoeudArbre(n, &sous_arbre);
-    }
-}
-
-Noeud* rechercheCreeNoeudArbre(Reseau* R, ArbreQuat** a, double x, double y) {
-    if (*a == NULL) {
-        *a = creerArbreQuat(x, y, 0, 0);
-        if (*a == NULL) {
-            printf("Erreur lors de la création de l'arbre\n");
-            return NULL;
-        }
-        return rechercheCreeNoeudListe(R, x, y);
-    }
-
-    if ((*a)->noeud != NULL) {
-        if ((*a)->noeud->x == x && (*a)->noeud->y == y) {
-            return (*a)->noeud;
-        }
-        Noeud* n = rechercheCreeNoeudListe(R, x, y);
-        insererNoeudArbre(n, a);
-        return n;
-    }
-
-    if (x < (*a)->xc && y < (*a)->yc) {
-        return rechercheCreeNoeudArbre(R, &((*a)->so), x, y);
-    } else if (x >= (*a)->xc && y < (*a)->yc) {
-        return rechercheCreeNoeudArbre(R, &((*a)->se), x, y);
-    } else if (x < (*a)->xc && y >= (*a)->yc) {
-        return rechercheCreeNoeudArbre(R, &((*a)->no), x, y);
-    } else {
-        return rechercheCreeNoeudArbre(R, &((*a)->ne), x, y);
-    }
-}
-
-Reseau* reconstitueReseauArbre(Chaines* C) {
-    if (C == NULL || C->nbChaines == 0) {
-        printf("Erreur reconstitueReseauArbre : C == NULL ou 0 chaine\n");
-        return NULL;
-    }
-
-    Reseau* res = (Reseau*)malloc(sizeof(Reseau));
-    if (res == NULL) {
-        printf("Erreur reconstitueReseauArbre: erreur malloc pour nouveau reseau\n");
-        return NULL;
-    }
-    res->nbNoeuds = 0;
-    res->gamma = C->gamma;
-    res->noeuds = NULL;
-    res->commodites = NULL;
-
-    // nouvel arbre quaternaire
-    double xmin, ymin, xmax, ymax;
-    chaineCoordMinMax(C, &xmin, &ymin, &xmax, &ymax);
-    double coteX = xmax - xmin;
-    double coteY = ymax - ymin;
-    double xc = coteX / 2;
-    double yc = coteY / 2;
-    ArbreQuat* aq = creerArbreQuat(xc, yc, coteX, coteY);
-
-    CellChaine* tempC = C->chaines;
-    while (tempC) {
-        CellPoint* tempP = tempC->points;
-
-        // premier noeud de la chaine
-        Noeud* n1 = rechercheCreeNoeudArbre(res, &aq, tempP->x, tempP->y);
-
-        // "pour chaque point de la chaine"
-        while (tempP->suiv) {
-            // noeud suivant
-            Noeud* n2 = rechercheCreeNoeudArbre(res, &aq, tempP->suiv->x, tempP->suiv->y);
-
-            if (rechercheVoisin(n1, n2) == 0) {
-                ajouterVoisin(n1, n2);
-                ajouterVoisin(n2, n1);
-            }
-
-            n1 = n2;
-            tempP = tempP->suiv;
-        }
-
-        // "on conserve la commodite de la chaine"  
-        CellCommodite* tempCom = (CellCommodite*)malloc(sizeof(CellCommodite));
-        if (tempCom != NULL) {
-            tempCom->extrA = n1;
-            tempCom->extrB = rechercheCreeNoeudArbre(res, &aq, tempC->points->x, tempC->points->y);
-            tempCom->suiv = res->commodites;
-            res->commodites = tempCom;
-        } else {
-            printf("Erreur reconstitueReseauArbre : échec malloc commodité\n");
-            return NULL;
-        }
-
         tempC = tempC->suiv;
     }
 

@@ -23,12 +23,12 @@ coteX et de hauteur coteY. Cette fonction initialisera le nœud du réseau, les 
 est, sud-ouest et sud-est à NULL.*/
 
 /*      Version qui fonctionne mais qui provoque aucune erreur mais à un paramètre en moins         */
-void insererNoeudArbre(Noeud* n, ArbreQuat** a);
-Noeud* rechercheCreeNoeudArbre(Reseau* R, ArbreQuat** a, double x, double y);
+//void insererNoeudArbre(Noeud* n, ArbreQuat** a);
+//Noeud* rechercheCreeNoeudArbre(Reseau* R, ArbreQuat** a, double x, double y);
 
 /*      Version qui fonctionne mais qui provoque des erreurs         */
-//void insererNoeudArbre(Noeud* n, ArbreQuat** a, ArbreQuat *parent);
-//Noeud* rechercheCreeNoeudArbre(Reseau* R, ArbreQuat** a, ArbreQuat *parent, double x, double y);
+void insererNoeudArbre(Noeud* n, ArbreQuat** a, ArbreQuat *parent);
+Noeud* rechercheCreeNoeudArbre(Reseau* R, ArbreQuat** a, ArbreQuat *parent, double x, double y);
 
 //
 void insererNoeudsArbreDansReseau(ArbreQuat* arbre, Reseau** R);
