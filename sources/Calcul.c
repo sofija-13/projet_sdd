@@ -171,9 +171,9 @@ int main(int argc, char** argv){
 
     return 0;
 }*/
-/*    pas de problème avec valgrind pour le cas 0      */
+
 /*    Plus on augmente la taille de la table de hachage et plus elle prend de temps à se terminer*/
-/*int main(){
+int main(){
     srand(time(NULL));
     Reseau* R = NULL;
     FILE* f = NULL;
@@ -214,9 +214,9 @@ int main(int argc, char** argv){
     // liberation memoire allouee pour Chaines*
     liberer_chaines(c);
     liberer_reseau(R);
-*/
+
     /*     Quand la chaine est généré aléatoirement       */
-/*
+
     // ouverture et ecriture 1ere ligne dans le fichier de sortie
     f = fopen("temps_calcul.csv","w"); // fichier pour table de hachage et arbre quaternaire
     fprintf(f, "# nbPointsTotal, liste_chainee, table_hachage, arbre_quaternaire\n");
@@ -252,8 +252,8 @@ int main(int argc, char** argv){
     }
     fclose(f);
     return 0;
-}*/
-
+}
+/*
 int main(){
     srand(time(NULL));
     Reseau* R = NULL;
@@ -265,9 +265,9 @@ int main(){
     f = fopen("00014_burma.cha", "r");
     Chaines* c = lectureChaines(f);
     fclose(f);
-
+*/
     /*  Taille de la table de Hachage varie  */
-
+/*
     f = fopen("temps_fichier2.txt","w");
     fprintf(f, "taille table_hachage\n");
 
@@ -311,4 +311,4 @@ int main(){
     }
     fclose(f);
     return 0;
-}
+}*/

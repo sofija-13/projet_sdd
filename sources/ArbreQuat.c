@@ -6,35 +6,36 @@
 #include "SVGwriter.h"
 
 void chaineCoordMinMax(Chaines* C, double* xmin, double* ymin, double* xmax, double* ymax) {
-    if (C == NULL) {
+    if (C == NULL) {// Vérifie si la chaîne est vide
         printf("Chaine Vide \n");
         return;
     }
 
     CellChaine* temp = C->chaines;
     CellPoint* premier = C->chaines->points;
+    // On initialise xmin,ymin,xmax et ymax avec les coordonnées du premier point
     *xmin = premier->x;
     *ymin = premier->y;
     *xmax = premier->x;
     *ymax = premier->y;
-    while (temp) {
+    while (temp) { // On parcourt les chaînes
         CellPoint* p = temp->points;
-        while (p) {
-            if (p->x < *xmin){
+        while (p) { // On parcourt les points de la chaîne
+            if (p->x < *xmin){ // Si p->x < xmin alors xmin = p->x
                 *xmin = p->x;
             } 
-            if (p->y < *ymin){
+            if (p->y < *ymin){// Si p->y < ymin alors ymin = p->y;
                 *ymin = p->y;
             } 
-            if (p->x > *xmax){
+            if (p->x > *xmax){// Si p->x > *xmax alors *xmax = p->x;
                 *xmax = p->x;
             } 
-            if (p->y > *ymax){
+            if (p->y > *ymax){// Si p->y > *ymax alors ymax = p->y;
                 *ymax = p->y;
             } 
-            p = p->suiv;
+            p = p->suiv; // On passe au point suivant
         }
-        temp = temp->suiv;
+        temp = temp->suiv; // On passe à la chaîne suivante
     }
 }
 
@@ -83,10 +84,7 @@ void insererNoeudArbre(Noeud* n, ArbreQuat** a, ArbreQuat* parent) {
 
         // Crée un nouvel arbre avec les nouvelles coordonnées.
         *a = creerArbreQuat(xc, yc, coteX, coteY);
-        if (*a == NULL) {
-            printf("Erreur lors de l'insertion du noeud dans l'arbre\n");
-            return;
-        }
+        
     }
 
     // Si l'arbre a déjà un nœud, insère récursivement le nœud actuel et le nœud passé en paramètre.
@@ -115,11 +113,7 @@ void insererNoeudArbre(Noeud* n, ArbreQuat** a, ArbreQuat* parent) {
 Noeud* rechercheCreeNoeudArbre(Reseau* R, ArbreQuat** a, ArbreQuat* parent, double x, double y) {
     // Si l'arbre est vide, crée un nouvel arbre avec les coordonnées spécifiées.
     if (*a == NULL) {
-        *a = creerArbreQuat(x, y, 0, 0);
-        if (*a == NULL) {
-            printf("Erreur lors de la création de l'arbre\n");
-            return NULL;
-        }
+        *a = creerArbreQuat(x, y, parent->coteX / 2, parent->coteX / 2); 
         // Recherche ou crée le nœud correspondant dans la liste.
         return rechercheCreeNoeudListe(R, x, y);
     }
@@ -155,10 +149,6 @@ Reseau* reconstitueReseauArbre(Chaines *C){
     }
     // nouveau reseau
     Reseau* res = (Reseau*)malloc(sizeof(Reseau));
-    if (res == NULL) {
-        printf("Erreur reconstitueReseauArbre: erreur malloc pour nouveau reseau\n");
-        return NULL;
-    }
     res->nbNoeuds = 0;
     res->gamma = C->gamma;
     res->noeuds = NULL;
