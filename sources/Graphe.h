@@ -34,5 +34,6 @@ typedef struct {
 } Graphe ;
 
 Graphe* creerGraphe(Reseau* r);
-void libererGraphe(Graphe* g) ;
+void liberer_graphe(Graphe* g) ;
+int PlusPetitNbArete (Sommet* u, Sommet* v);
 #endif
