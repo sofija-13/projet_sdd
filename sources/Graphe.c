@@ -11,35 +11,10 @@ Graphe* creerGraphe(Reseau* r) {
     }
     // Alloue de la mémoire pour le graphe
     Graphe* graphe = (Graphe*)malloc(sizeof(Graphe)); 
-    if (graphe == NULL) {
-        printf("Erreur creerGraphe : Impossible d'allouer de la mémoire pour le graphe.\n");
-        return NULL;
-    }
     graphe->nbsom = r->nbNoeuds; // Nombre de sommets dans le graphe
     graphe->gamma = r->gamma; // Nombre maximal de fibres par câble
     graphe->T_som = (Noeud**)malloc(graphe->nbsom * sizeof(Noeud*)); // Alloue de la mémoire pour le tableau de pointeurs de noeuds
-    if (graphe->T_som == NULL) {
-        printf("Erreur creerGraphe : Impossible d'allouer de la mémoire pour le tableau de noeuds.\n");
-        free(graphe); // Libère la mémoire pour le graphe
-        return NULL;
-    }
-
-    // Initialisation des noeuds dans le graphe en utilisant les noeuds du réseau
-    CellNoeud* currentNoeud = r->noeuds; // Pointeur vers le premier noeud du réseau
-    for (int i = 0; i < graphe->nbsom; i++) {
-        graphe->T_som[i] = currentNoeud->nd; // Affecte directement le pointeur de noeud
-        currentNoeud = currentNoeud->suiv; // Passe au noeud suivant dans le réseau
-    }
-
-    // Parcours des commodités pour ajouter les arêtes au graphe
-    CellCommodite* currentCommodite = r->commodites;
-    while (currentCommodite != NULL) {
-        // Les extrémités de la commodité sont déjà des voisins
-        ajouterVoisin(graphe->T_som[currentCommodite->extrA->num], graphe->T_som[currentCommodite->extrB->num]);
-        ajouterVoisin(graphe->T_som[currentCommodite->extrB->num], graphe->T_som[currentCommodite->extrA->num]);
-        currentCommodite = currentCommodite->suiv; // Passe à la commodité suivante
-    }
-
+    
     return graphe; // Retourne le graphe créé
 }
 
