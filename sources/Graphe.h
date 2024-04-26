@@ -35,5 +35,8 @@ typedef struct {
 
 Graphe* creerGraphe(Reseau* r);
 void liberer_graphe(Graphe* g) ;
-int PlusPetitNbArete (Sommet* u, Sommet* v);
+int plusPetitNbAretes(Graphe* g, int u, int v);
+int* plusCourtChemin(Graphe* g, int u, int v);
+//int reorganizeReseau(Reseau *r);
+int reorganiseReseau(Reseau* r);
 #endif

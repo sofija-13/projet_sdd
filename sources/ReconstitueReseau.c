@@ -32,6 +32,7 @@ int main(int argc, char** argv){
     
     case 1: // table de hachage
         R = reconstitueReseauHachage(c, TAILLE);
+        printf("7896524\n");
         break;
 
     case 2: // arbre quaternaire
