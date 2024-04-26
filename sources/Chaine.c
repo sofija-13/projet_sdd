@@ -15,10 +15,6 @@ Chaines* lectureChaines(FILE *f) {
     }
 
     Chaines *nv = (Chaines*)malloc(sizeof(Chaines));
-    if (nv == NULL) {
-        printf("Erreur malloc dans lectureChaines\n");
-        return NULL;
-    }
 
     fscanf(f, "NbChain: %d\n", &(nv->nbChaines));
     fscanf(f, "Gamma: %d\n", &(nv->gamma));
@@ -40,10 +36,6 @@ Chaines* lectureChaines(FILE *f) {
 
         for (int j = 0; j < nbPoints; j++) {
             CellPoint *p = (CellPoint*)malloc(sizeof(CellPoint));
-            if (p == NULL) {
-                printf("Erreur d'allocation de mémoire\n");
-                return NULL;
-            }
             fscanf(f, "%lf %lf", &(p->x), &(p->y));
             // printf(" x = %lf  y = %lf \n",p->x, p->y);
             p->suiv = c->points;

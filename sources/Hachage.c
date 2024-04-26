@@ -4,6 +4,7 @@
 #include <math.h>
 #include "Hachage.h"
 
+/*
 double clef(double x, double y){ 
     return y + (x + y)*(x + y + 1)/2;
 }
@@ -13,11 +14,11 @@ int hachage(double k, int m){
     double x = k * a - (int)(k * a);
     return (int)(x*m);
 } 
-
+*/
 /* c'est la meme que celle du projet precedent,
 attendre correction mini-projet pour valider */
 
-
+/*
 TableHachage* creer_hachage(int m){
     TableHachage* H = (TableHachage*) malloc(sizeof(TableHachage));
     if (H == NULL) { 
@@ -51,7 +52,7 @@ void ajoutNoeudHachage(TableHachage* H, Noeud* nv){
     nouveau->suiv = H->T[index];
     H->T[index] = nouveau;
 }
-
+*//*
 Noeud* rechercheCreeNoeudHachage(Reseau* R, TableHachage* H, double x, double y){
     if (R==NULL || H==NULL){ // test validite arguments
         printf("Erreur rechercheCreeNoeudHachage : reseau ou table de hachage NULL\n");
@@ -88,6 +89,146 @@ Noeud* rechercheCreeNoeudHachage(Reseau* R, TableHachage* H, double x, double y)
     
     return nouveau->nd;
 }
+
+Noeud* rechercheCreeNoeudHachage(Reseau* R, TableHachage* H, double x, double y) {
+    if (R == NULL || H == NULL) {
+        printf("Erreur rechercheCreeNoeudHachage : reseau ou table de hachage NULL\n");
+        return NULL;
+    }
+
+    // Calcule l'index dans la table de hachage
+    int index = hachage(clef(x, y), H->tailleMax);
+    
+    // Vérifie si la liste chaînée à cet index est non vide
+    if (H->T[index] != NULL) {
+        // Parcourt la liste chaînée à cet index pour rechercher le noeud
+        CellNoeud *temp = H->T[index];
+        while (temp != NULL) {
+            // Vérifie si les coordonnées correspondent
+            if (temp->nd->x == x && temp->nd->y == y) {
+                // Retourne le noeud si trouvé
+                return temp->nd;
+            }
+            // Passe au noeud suivant dans la liste chaînée
+            temp = temp->suiv;  
+        }
+    }
+    
+    // Si le noeud n'est pas trouvé dans la table de hachage, il faut le créer
+    
+    // Crée un nouveau noeud
+    Noeud* nouveauNoeud = (Noeud*)malloc(sizeof(Noeud));
+    if (nouveauNoeud == NULL) {
+        printf("Erreur rechercheCreeNoeudHachage : échec malloc pour nouveauNoeud\n");
+        return NULL;
+    }
+    // Initialise les valeurs du nouveau noeud
+    nouveauNoeud->num = R->nbNoeuds + 1;
+    nouveauNoeud->x = x;
+    nouveauNoeud->y = y;
+    nouveauNoeud->voisins = NULL;
+
+    // Ajoute le nouveau noeud à la liste des noeuds du réseau
+    CellNoeud* nouveauCellule = (CellNoeud*)malloc(sizeof(CellNoeud)); 
+    if (nouveauCellule == NULL) {
+        printf("Erreur rechercheCreeNoeudHachage : échec malloc pour nouveauCellule\n");
+        free(nouveauNoeud); // Libère la mémoire allouée pour le nouveauNoeud
+        return NULL;
+    }
+    nouveauCellule->nd = nouveauNoeud;
+    nouveauCellule->suiv = R->noeuds;
+    R->noeuds = nouveauCellule;
+    R->nbNoeuds++;
+    
+    // Ajoute le nouveau noeud à la table de hachage
+    ajoutNoeudHachage(H, nouveauNoeud);
+
+    // Retourne le nouveau noeud créé
+    return nouveauNoeud;
+}
+
+
+
+void ajoutNoeudHachage(TableHachage* H, Noeud* nv){
+    if (H == NULL || nv == NULL) { 
+        printf("Erreur ajoutNoeudHachage : H ou nv est NULL\n");
+        return;
+    }
+
+    CellNoeud *nouveau = (CellNoeud*) malloc(sizeof(CellNoeud)); 
+    if (nouveau == NULL) {
+        printf("Erreur ajoutNoeudHachage : échec malloc pour nouveau\n");
+        return;
+    }
+
+    nouveau->nd = nv;
+    
+    int index = hachage(clef(nv->x, nv->y), H->tailleMax);
+    
+    nouveau->suiv = H->T[index];
+    H->T[index] = nouveau;
+}
+
+*/
+/*
+Noeud* rechercheCreeNoeudHachage(Reseau* R, TableHachage* H, double x, double y) {
+    if (R == NULL || H == NULL) {
+        printf("Erreur rechercheCreeNoeudHachage : reseau ou table de hachage NULL\n");
+        return NULL;
+    }
+
+    // Calcule l'index dans la table de hachage
+    int index = hachage(clef(x, y), H->tailleMax);
+    
+    // Vérifie si la liste chaînée à cet index est non vide
+    if (H->T[index] != NULL) {
+        // Parcourt la liste chaînée à cet index pour rechercher le noeud
+        CellNoeud *temp = H->T[index];
+        while (temp != NULL) {
+            // Vérifie si les coordonnées correspondent
+            if (temp->nd->x == x && temp->nd->y == y) {
+                // Retourne le noeud si trouvé
+                return temp->nd;
+            }
+            // Passe au noeud suivant dans la liste chaînée
+            temp = temp->suiv;  
+        }
+    }
+    
+    // Si le noeud n'est pas trouvé dans la table de hachage, il faut le créer
+    
+    // Crée un nouveau noeud
+    Noeud* nouveauNoeud = (Noeud*)malloc(sizeof(Noeud));
+    if (nouveauNoeud == NULL) {
+        printf("Erreur rechercheCreeNoeudHachage : échec malloc pour nouveauNoeud\n");
+        return NULL;
+    }
+    // Initialise les valeurs du nouveau noeud
+    nouveauNoeud->num = R->nbNoeuds + 1;
+    nouveauNoeud->x = x;
+    nouveauNoeud->y = y;
+    nouveauNoeud->voisins = NULL;
+
+    // Ajoute le nouveau noeud à la liste des noeuds du réseau
+    CellNoeud* nouveauCellule = (CellNoeud*)malloc(sizeof(CellNoeud)); 
+    if (nouveauCellule == NULL) {
+        printf("Erreur rechercheCreeNoeudHachage : échec malloc pour nouveauCellule\n");
+        free(nouveauNoeud); // Libère la mémoire allouée pour le nouveauNoeud
+        return NULL;
+    }
+    nouveauCellule->nd = nouveauNoeud;
+    nouveauCellule->suiv = R->noeuds;
+    R->noeuds = nouveauCellule;
+    R->nbNoeuds++;
+    
+    // Ajoute le nouveau noeud à la table de hachage
+    ajoutNoeudHachage(H, nouveauNoeud);
+
+    // Retourne le nouveau noeud créé
+    return nouveauNoeud;
+}
+
+
 
 void liberer_noeud(CellNoeud* n){
     if (n == NULL){
@@ -204,6 +345,7 @@ Reseau* reconstitueReseauHachage(Chaines *C, int M){
 
     return res;
 }
+*/
 
 /* test fonction clef
 int main(){
@@ -216,3 +358,178 @@ int main(){
     return 0;
 }
 */
+
+
+int clef(int x, int y){
+    return y + (x + y)*(x + y + 1)/2;
+}
+
+int hachage(int cle, int M){
+    double A = (sqrt(5) - 1)/2;
+    return (int)(M*(A*cle - (int)(A*cle)));
+}
+
+TableHachage* creer_hachage(int m){
+    TableHachage* H = (TableHachage*) malloc(sizeof(TableHachage));
+    if (H == NULL) { 
+        // erreur malloc
+        printf("Erreur creer_hachage : erreur malloc\n");
+        return NULL;
+    }
+
+    // H->nbElement=0;
+    H->tailleMax = m;
+    H->T = (CellNoeud**) malloc(m * sizeof(CellNoeud*));
+    if (H->T == NULL) { 
+        // erreur malloc : liberation memoire H
+        free(H);
+        printf("Erreur creer_hachage : erreur malloc\n");
+        return NULL;
+    }
+    // initialisation cases table hachage 
+    for (int i = 0; i < m; i++) {
+        H->T[i] = NULL;
+    }
+    return H;
+} 
+
+Noeud* rechercheCreeNoeudHachage(Reseau* R, TableHachage*H, double x, double y){
+    printf("ICI1\n");
+    int h = hachage(clef(x,y),H->tailleMax);
+    CellNoeud* pcn = H->T[h];
+    while(pcn != NULL){
+        if(pcn->nd->x == x && pcn->nd->y == y)
+        printf("ICI2\n");
+            return pcn->nd;
+        pcn = pcn->suiv;    
+    }
+    printf("ICI3\n");
+    CellNoeud* nouv = (CellNoeud*)malloc(sizeof(CellNoeud));
+    nouv->nd = (Noeud*)malloc(sizeof(Noeud));
+    nouv->nd->num = R->nbNoeuds;
+    R->nbNoeuds++;
+    nouv->nd->voisins = NULL;
+    nouv->nd->x = x;
+    nouv->nd->y = y;
+    nouv->suiv = H->T[h];
+    H->T[h] = nouv;
+    CellNoeud* nouv2 = (CellNoeud*)malloc(sizeof(CellNoeud));
+    nouv2->nd = nouv->nd;
+    nouv2->suiv = R->noeuds;
+    R->noeuds = nouv2;
+    printf("ICI4\n");
+    return nouv->nd;
+}
+
+void liberer_table_hachage(TableHachage* h){
+    CellNoeud** tab = h->T;
+    for(int i = 0; i < h->tailleMax; i++){
+        CellNoeud* pcn = h->T[i];
+        while(pcn != NULL){
+            CellNoeud* tmp = pcn;
+            pcn = pcn->suiv;
+            free(tmp);
+        }
+    }
+    free(tab);
+    free(h);
+}
+
+Reseau* reconstitueReseauHachage(Chaines *C, int M) {
+    // Création de la table de hachage
+    TableHachage* h = creer_hachage(M);
+    if (h == NULL) {
+        printf("Erreur reconstitueReseauHachage : erreur lors de la création de la table de hachage\n");
+        return NULL;
+    }
+    printf("ICI5\n");
+    // Création du réseau
+    Reseau* r = (Reseau*)malloc(sizeof(Reseau));
+    if (r == NULL) {
+        printf("Erreur reconstitueReseauHachage : erreur d'allocation de mémoire pour le réseau\n");
+        liberer_table_hachage(h);
+        return NULL;
+    }
+    r->gamma = C->gamma;
+    r->nbNoeuds = 0;
+    r->noeuds = NULL;
+    r->commodites = NULL;
+
+    // Parcours des chaines
+    CellChaine* pcc = C->chaines;
+    while (pcc != NULL) {
+        CellPoint* pcp = pcc->points;
+        if (pcp != NULL) {
+            CellCommodite* cmdt = (CellCommodite*)malloc(sizeof(CellCommodite));
+            if (cmdt == NULL) {
+                printf("Erreur reconstitueReseauHachage : erreur d'allocation de mémoire pour la commodité\n");
+                liberer_table_hachage(h);
+                free(r);
+                return NULL;
+            }
+            Noeud* pn1 = rechercheCreeNoeudHachage(r, h, pcp->x, pcp->y);
+            cmdt->extrA = pn1;
+
+            while (pcp->suiv != NULL) {
+                Noeud* pn2 = rechercheCreeNoeudHachage(r, h, pcp->suiv->x, pcp->suiv->y);
+                if (rechercheVoisin(pn1, pn2) == 0) {
+                    // Allocation des cellules de voisins
+                    CellNoeud* pcn1 = (CellNoeud*)malloc(sizeof(CellNoeud));
+                    CellNoeud* pcn2 = (CellNoeud*)malloc(sizeof(CellNoeud));
+                    if (pcn1 == NULL || pcn2 == NULL) {
+                        printf("Erreur reconstitueReseauHachage : erreur d'allocation de mémoire pour les cellules de voisins\n");
+                        liberer_table_hachage(h);
+                        free(cmdt);
+                        free(r);
+                        return NULL;
+                    }
+
+                    // Allocation des nœuds
+                    pcn1->nd = (Noeud*)malloc(sizeof(Noeud));
+                    pcn2->nd = (Noeud*)malloc(sizeof(Noeud));
+                    if (pcn1->nd == NULL || pcn2->nd == NULL) {
+                        printf("Erreur reconstitueReseauHachage : erreur d'allocation de mémoire pour les nœuds\n");
+                        liberer_table_hachage(h);
+                        free(cmdt);
+                        free(r);
+                        free(pcn1);
+                        free(pcn2);
+                        return NULL;
+                    }
+
+                    // Initialisation des nœuds
+                    pcn1->nd->num = pn2->num;
+                    pcn1->nd->x = pn2->x;
+                    pcn1->nd->y = pn2->y;
+                    pcn1->nd->voisins = NULL; // Le champ voisins doit être initialisé à NULL
+                    pcn2->nd->num = pn1->num;
+                    pcn2->nd->x = pn1->x;
+                    pcn2->nd->y = pn1->y;
+                    pcn2->nd->voisins = NULL; // Le champ voisins doit être initialisé à NULL
+
+                    // Ajout des nœuds dans la liste des nœuds du réseau
+                    pcn1->suiv = r->noeuds;
+                    r->noeuds = pcn1;
+                    pcn2->suiv = r->noeuds;
+                    r->noeuds = pcn2;
+
+                    // Ajout des cellules de voisins
+                    pcn1->suiv = pn1->voisins;
+                    pn1->voisins = pcn1;
+                    pcn2->suiv = pn2->voisins;
+                    pn2->voisins = pcn2;
+                }
+                pn1 = pn2;
+                pcp = pcp->suiv;
+            }
+            cmdt->extrB = rechercheCreeNoeudHachage(r, h, pcp->x, pcp->y);
+            cmdt->suiv = r->commodites;
+            r->commodites = cmdt;
+        }
+        pcc = pcc->suiv;
+    }
+
+    liberer_table_hachage(h);
+    printf("ICI999\n");
+    return r;
+}
