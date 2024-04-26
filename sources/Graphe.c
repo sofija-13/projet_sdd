@@ -132,8 +132,6 @@ int PlusPetitNbArete (Sommet* u, Sommet* v){
     return nb;
 }
 
-
-
 int main(){
 
     FILE* f = fopen("00014_burma.cha", "r");
@@ -148,4 +146,3 @@ int main(){
     liberer_graphe(G);
     return 0;
 }
-
