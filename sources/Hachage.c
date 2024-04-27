@@ -394,16 +394,16 @@ TableHachage* creer_hachage(int m){
 } 
 
 Noeud* rechercheCreeNoeudHachage(Reseau* R, TableHachage*H, double x, double y){
-    printf("ICI1\n");
+    
     int h = hachage(clef(x,y),H->tailleMax);
     CellNoeud* pcn = H->T[h];
     while(pcn != NULL){
         if(pcn->nd->x == x && pcn->nd->y == y)
-        printf("ICI2\n");
+        
             return pcn->nd;
         pcn = pcn->suiv;    
     }
-    printf("ICI3\n");
+    
     CellNoeud* nouv = (CellNoeud*)malloc(sizeof(CellNoeud));
     nouv->nd = (Noeud*)malloc(sizeof(Noeud));
     nouv->nd->num = R->nbNoeuds;
@@ -417,7 +417,7 @@ Noeud* rechercheCreeNoeudHachage(Reseau* R, TableHachage*H, double x, double y){
     nouv2->nd = nouv->nd;
     nouv2->suiv = R->noeuds;
     R->noeuds = nouv2;
-    printf("ICI4\n");
+    
     return nouv->nd;
 }
 
@@ -442,7 +442,7 @@ Reseau* reconstitueReseauHachage(Chaines *C, int M) {
         printf("Erreur reconstitueReseauHachage : erreur lors de la création de la table de hachage\n");
         return NULL;
     }
-    printf("ICI5\n");
+    
     // Création du réseau
     Reseau* r = (Reseau*)malloc(sizeof(Reseau));
     if (r == NULL) {
@@ -530,6 +530,6 @@ Reseau* reconstitueReseauHachage(Chaines *C, int M) {
     }
 
     liberer_table_hachage(h);
-    printf("ICI999\n");
+    
     return r;
 }
