@@ -31,6 +31,7 @@ int main(int argc, char** argv){
         break;
     
     case 1: // table de hachage
+        afficheChainesSVG(c,"chaine");
         R = reconstitueReseauHachage(c, TAILLE);
         printf("7896524\n");
         break;

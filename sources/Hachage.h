@@ -8,12 +8,12 @@ typedef struct{
   CellNoeud** T;
 } TableHachage ;
 
-int clef(int x, int y);
-//double clef(double x, double y);
+//int clef(int x, int y);
+double clef(double x, double y);
 // renvoie la clef associee a un point de coordonnees (x,y)
 
-int hachage(int k, int m);
-//int hachage(double k, int m);
+//int hachage(int k, int m);
+int hachage(double k, int m);
 // renvoie l'index de la table de hachage associe a la clef k
 
 void ajoutNoeudHachage(TableHachage* H, Noeud* nv);

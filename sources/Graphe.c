@@ -231,7 +231,9 @@ int main(){
     fclose(f);
 
     Reseau* R = reconstitueReseauListe(c);
+    afficheReseauSVG(R,"R avant");
     reorganiseReseau(R);
+    afficheReseauSVG(R,"R apres");
     Graphe* G = creerGraphe(R);
     liberer_chaines(c);
     liberer_reseau(R);
