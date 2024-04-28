@@ -224,7 +224,7 @@ int main(){
 
     Reseau* R = reconstitueReseauArbre(c);
     afficheReseauSVG(R,"R avant");
-    reorganiseReseau(R);
+    printf("%d \n", reorganiseReseau(R));
     afficheReseauSVG(R,"R apres");
     Graphe* G = creerGraphe(R);
     liberer_chaines(c);
@@ -237,7 +237,7 @@ int main(){
     fclose(f2);
 
     Reseau* R2 = reconstitueReseauArbre(c2);
-    reorganiseReseau(R2);
+    printf("%d \n", reorganiseReseau(R2));
     Graphe* G2 = creerGraphe(R2);
     liberer_chaines(c2);
     liberer_reseau(R2);
@@ -249,6 +249,7 @@ int main(){
     fclose(f3);
 
     Reseau* R3 = reconstitueReseauArbre(c3);
+    printf("%d \n", reorganiseReseau(R3));
     reorganiseReseau(R3);
     Graphe* G3 = creerGraphe(R3);
     liberer_chaines(c3);
