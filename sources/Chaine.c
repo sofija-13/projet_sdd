@@ -12,26 +12,28 @@ Chaines* lectureChaines(FILE *f){
         printf("Erreur lectureChaines : FILE NULL\n");
         return NULL;
     }
-    // nouvelle chaine
+    // creation nouvelle chaine
     Chaines *nv = (Chaines*)malloc(sizeof(Chaines));
     fscanf(f, "NbChain: %d\n", &(nv->nbChaines));
     fscanf(f, "Gamma: %d\n", &(nv->gamma));
-    nv->chaines = NULL;  
+    nv->chaines = NULL; // initialisation de la liste de chaines
 
     // pour chaque cellChaine de la Chaine
     for (int i = 0; i < nv->nbChaines; i++){
+        // malloc nouvelle cellchaine
         CellChaine *c = (CellChaine*)malloc(sizeof(CellChaine));
         fscanf(f, "%d", &(c->numero));
-        c->points = NULL;
+        c->points = NULL; // initialisation de la liste de points
         int nbPoints;
         fscanf(f, "%d", &nbPoints);
 
-        //pour chaque point de la chaine
-        for (int j = 0; j < nbPoints; j++) {
+        // pour chaque point de la chaine
+        for (int j = 0; j < nbPoints; j++){
+            // malloc nouvelle cellpoint
             CellPoint *p = (CellPoint*)malloc(sizeof(CellPoint));
             // lit les coordonnées x, y du point depuis le fichier
             fscanf(f, "%lf %lf", &(p->x), &(p->y));
-             // ajoute le point en tete de la liste des points de la chaine
+            // ajoute du point en tete de la liste des points de la chaine
             p->suiv = c->points;
             c->points = p;
         }
@@ -47,24 +49,28 @@ void ecrireChaines(Chaines *C, FILE *f){
         printf("ecrireChaines : argument NULL\n");
         return;
     }
-    //ecrit le nombre de chaînes et gamma dans le fichier
+    // ecriture premieres lignes du fichier
     fprintf(f, "NbChain: %d\nGamma: %d\n", C->nbChaines, C->gamma);
     fprintf(f, "\n");
     CellChaine *temp = C->chaines;
+
     //pour chaque cellChaine de la Chaine
     while (temp){
         int nb_points=0;
-        // ecrit le numéro de la chaîne dans le fichier
+
+        // ecriture numero de la chaine dans fichier
         fprintf(f, "%d ", temp->numero);
         CellPoint* temp_points=temp->points;
         while(temp_points){ // compte nombre de points dans la chaine
             nb_points++;
             temp_points = temp_points->suiv;
         }
-        fprintf(f, "%d ", nb_points);
-        // ecrit les coordonnées x, y de chaque point dans la chaîne
+        fprintf(f, "%d ", nb_points); // ecriture nombre de points
+
+        // ecriture coordonnees x, y de chaque point dans la chaine
         CellPoint* temp_points2=temp->points;
         while(temp_points2){
+            // ecriture coordonnees des points
             fprintf(f, "%.2lf %.2lf ", temp_points2->x, temp_points2->y);
             temp_points2 = temp_points2->suiv;
         }
@@ -75,7 +81,8 @@ void ecrireChaines(Chaines *C, FILE *f){
 
 // fonction fournie
 void afficheChainesSVG(Chaines *C, char* nomInstance){
-    if (C==NULL){
+    // ajout : test des arguments
+    if (C==NULL){ 
         printf("afficheChainesSVG : argument NULL\n");
         return;
     }
@@ -118,14 +125,15 @@ void afficheChainesSVG(Chaines *C, char* nomInstance){
 }
 
 double longueurChaine(CellChaine *C){
-    if (C == NULL){ 
+    if (C == NULL){ // test arguments
         printf("longueurTotale : C vide\n");
         return 0.0; //retourne 0.0 si C est vide (NULL)
     }
     double longueur = 0.0;
     CellPoint *A = C->points;
     CellPoint *B = C->points->suiv;
-    while(B){
+    // calcul longueur
+    while(B){ 
         longueur += sqrt((B->x - A->x)*(B->x - A->x) + (B->y - A->y)*(B->y - A->y));
         A = A->suiv;
         B = B->suiv;
@@ -134,12 +142,13 @@ double longueurChaine(CellChaine *C){
 }
 
 double longueurTotale(Chaines *C){
-    if (C == NULL){
+    if (C == NULL){ // test arguments
         printf("longueurTotale : c vide\n");
         return 0.0;
     }
     double total = 0.0;
     CellChaine* temp = C->chaines;
+    // somme des longueurs
     while(temp){
         total += longueurChaine(temp);
         temp=temp->suiv;
@@ -148,14 +157,16 @@ double longueurTotale(Chaines *C){
 }
 
 int comptePointsTotal(Chaines *C){
-    if (C==NULL || C->chaines==NULL){ 
+    if (C==NULL || C->chaines==NULL){ // test arguments
         printf("comptePointsTotal : C vide\n");
         return 0;
     }
     int nbPoint = 0;
     CellChaine *temp = C->chaines;
+    // parcours des chaines
     while(temp){
         CellPoint *tempP = temp->points;
+        // parcours de la liste de points
         while(tempP){
             nbPoint++;
             tempP = tempP->suiv;
@@ -167,7 +178,7 @@ int comptePointsTotal(Chaines *C){
 }
 
 void liberer_chaines(Chaines *C){
-    if (C==NULL){
+    if (C==NULL){ // test arguments
         printf("liberer_chaines : C deja vide\n");
         return;
     }
