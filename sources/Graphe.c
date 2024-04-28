@@ -230,7 +230,7 @@ int main(){
     Chaines* c = lectureChaines(f);
     fclose(f);
 
-    Reseau* R = reconstitueReseauListe(c);
+    Reseau* R = reconstitueReseauArbre(c);
     afficheReseauSVG(R,"R avant");
     reorganiseReseau(R);
     afficheReseauSVG(R,"R apres");
@@ -239,12 +239,12 @@ int main(){
     liberer_reseau(R);
     liberer_graphe(G);
 
-    //
+    
     FILE* f2 = fopen("00014_burma.cha", "r");
     Chaines* c2 = lectureChaines(f2);
     fclose(f2);
 
-    Reseau* R2 = reconstitueReseauListe(c2);
+    Reseau* R2 = reconstitueReseauArbre(c2);
     reorganiseReseau(R2);
     Graphe* G2 = creerGraphe(R2);
     liberer_chaines(c2);
@@ -256,7 +256,7 @@ int main(){
     Chaines* c3 = lectureChaines(f3);
     fclose(f3);
 
-    Reseau* R3 = reconstitueReseauListe(c3);
+    Reseau* R3 = reconstitueReseauArbre(c3);
     reorganiseReseau(R3);
     Graphe* G3 = creerGraphe(R3);
     liberer_chaines(c3);

@@ -4,7 +4,8 @@
 #include <stdio.h>
 #include "Struct_File.h"
 #include "Reseau.h"
-
+#include "Hachage.h"
+#include "ArbreQuat.h"
 typedef struct {
     int u, v;/* Numeros des sommets extremite */
 }Arete;
