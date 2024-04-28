@@ -28,11 +28,11 @@ int e1 , e2 ;
 
 typedef struct {
     int nbsom ; /* Nombre de sommets */
-    Sommet ** T_som ; /* Tableau de pointeurs sur sommets */
+    Sommet** T_som ; /* Tableau de pointeurs sur sommets */
     int gamma ;
     int nbcommod ;/* Nombre de commodites */
     Commod * T_commod ; /* Tableau des commodites */
-} Graphe ;
+} Graphe;
 
 Graphe* creerGraphe(Reseau* r);
 void liberer_graphe(Graphe* g) ;
