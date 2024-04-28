@@ -62,12 +62,12 @@ void ajouterVoisin(Noeud* noeud, Noeud* voisin) {
         return;
     }
 
-    // Allocation de mémoire pour la nouvelle cellule de voisin
+    // malloc pour la nouvelle cellule de voisin
     CellNoeud* temp = (CellNoeud*)malloc(sizeof(CellNoeud));
     temp->nd = voisin;
     temp->suiv = noeud->voisins;
 
-    // Mise à jour de la liste des voisins du noeud
+    // MAJ de la liste des voisins du noeud
     noeud->voisins = temp;
 }
 
@@ -120,7 +120,7 @@ Reseau* reconstitueReseauListe(Chaines *C){
 }
 
 int nbVoisins(Noeud *nd) {
-    if (nd == NULL) {
+    if (nd == NULL){
         printf("Erreur nbVoisins : Noeud vide\n");
         return 0;
     }
@@ -147,10 +147,14 @@ int nbLiaisons(Reseau *R) {
         cpt += nbVoisins(temp->nd);
         temp = temp->suiv;
     }
-    return cpt / 2; // Chaque liaison est comptée deux fois
+    return cpt / 2; // car liaisons comptées 2 fois
 }
 
 int nbCommodites(Reseau *R){
+    if (R == NULL){
+        printf("Erreur nbCommodites : reseau NULL\n");
+        return 0;
+    }
     CellCommodite* temp = R->commodites;
     int res=0;
     while(temp){
@@ -161,13 +165,13 @@ int nbCommodites(Reseau *R){
 }
 
 void ecrireReseau(Reseau *R, FILE *f) {
-    // Écrire les informations générales du réseau dans le fichier
+    // ecriture premieres lignes du fichier
     fprintf(f, "NbNoeuds: %d\n", R->nbNoeuds);
-    fprintf(f, "NbLiaisons: %d\n", nbLiaisons(R)); // Utilisez la fonction nbLiaisons pour obtenir le nombre de liaisons
-    fprintf(f, "NbCommodites: %d\n", nbCommodites(R)); // Utilisez la fonction nbCommodites pour obtenir le nombre de commodités
+    fprintf(f, "NbLiaisons: %d\n", nbLiaisons(R));
+    fprintf(f, "NbCommodites: %d\n", nbCommodites(R));
     fprintf(f, "Gamma: %d\n\n", R->gamma);
 
-    // Écrire les coordonnées des noeuds dans le fichier
+    // coordonnees et numero des noeuds
     CellNoeud *tempN = R->noeuds;
     while (tempN) {
         fprintf(f, "v %d %lf %lf\n", tempN->nd->num, tempN->nd->x, tempN->nd->y);
@@ -175,7 +179,7 @@ void ecrireReseau(Reseau *R, FILE *f) {
     }
     fprintf(f, "\n");
 
-    // Écrire les liaisons dans le fichier
+    // liaisons 
     tempN = R->noeuds;
     while (tempN) {
         CellNoeud *tempN2 = tempN->nd->voisins;
@@ -189,7 +193,7 @@ void ecrireReseau(Reseau *R, FILE *f) {
     }
     fprintf(f, "\n");
 
-    // Écrire les commodités dans le fichier
+    // commodites
     CellCommodite *tempC = R->commodites;
     while (tempC) {
         fprintf(f, "k %d %d\n", tempC->extrB->num, tempC->extrA->num);
@@ -197,6 +201,7 @@ void ecrireReseau(Reseau *R, FILE *f) {
     }
 }
 
+// fonction donnée
 void afficheReseauSVG(Reseau *R, char* nomInstance){
     CellNoeud *courN,*courv;
     SVGwriter svg;
@@ -226,11 +231,11 @@ void afficheReseauSVG(Reseau *R, char* nomInstance){
 }
 
 void liberer_noeuds(CellNoeud *noeuds) {
-    // Libération récursive des noeuds et de leurs voisins
+    // liberation noeuds et leurs voisins
     while (noeuds) {
         CellNoeud *temp = noeuds->suiv;
 
-        // Libération des voisins du noeud
+        // liberation voisins du noeud
         CellNoeud *temp2 = noeuds->nd->voisins;
         while (temp2) {
             CellNoeud *temp3 = temp2->suiv;
@@ -238,24 +243,23 @@ void liberer_noeuds(CellNoeud *noeuds) {
             temp2 = temp3;
         }
 
-        // Libération du noeud lui-même
+        // liberation noeud 
         free(noeuds->nd);
         free(noeuds);
         noeuds = temp;
     }
 }
 
-void liberer_reseau(Reseau *R) {
-    // Si R deja vide 
-    if (R == NULL) {
+void liberer_reseau(Reseau *R){ 
+    if (R == NULL){
         printf("Erreur liberer_reseau : R deja vide\n");
-        return; // return direct
+        return; 
     }
 
-    // Libération des noeuds et de leurs voisins
+    // liberation noeuds et leurs voisins
     liberer_noeuds(R->noeuds);
 
-    // Libération des commodités
+    // liberation commodites
     CellCommodite *tempC = R->commodites;
     while (tempC) {
         CellCommodite *tempC2 = tempC->suiv;
@@ -263,6 +267,5 @@ void liberer_reseau(Reseau *R) {
         tempC = tempC2;
     }
 
-    // Libération de la structure Reseau
     free(R);
 }

@@ -15,10 +15,7 @@ int hachage(double k, int m){
     double x = k * a - floor(k * a);
     return floor(x*m);
     
-} 
-/* c'est la meme que celle du projet precedent,
-attendre correction mini-projet pour valider */
-
+}
 
 TableHachage* creer_hachage(int m){
     TableHachage* H = (TableHachage*) malloc(sizeof(TableHachage));
@@ -34,6 +31,10 @@ TableHachage* creer_hachage(int m){
 } 
 
 void ajoutNoeudHachage(TableHachage* H, Noeud* nv){
+    if (H==NULL || nv == NULL){ // test validite arguments
+        printf("Erreur ajoutNoeudHachage : parametre NULL\n");
+        return;
+    }
     CellNoeud *temp = (CellNoeud*) malloc(sizeof(CellNoeud)); 
     temp->nd = nv;
     int index = hachage(clef(temp->nd->x, temp->nd->y), H->tailleMax);
@@ -65,17 +66,17 @@ Noeud* rechercheCreeNoeudHachage(Reseau* R, TableHachage* H, double x, double y)
     nv->nd->x = x;
     nv->nd->y = y;
     nv->nd->voisins = NULL;
+
     // ajout en tete dans la liste des noeuds du reseau
     nv->suiv = R->noeuds;
     R->noeuds = nv;
     R->nbNoeuds++;
+    
     //ajout dans la table de hachage
     ajoutNoeudHachage(H, nv->nd);
+    
     return nv->nd;
 }
-
-
-
 
 Reseau* reconstitueReseauHachage(Chaines *C, int M){
     if (C == NULL || C->nbChaines == 0) { // test validite des arguments
@@ -130,10 +131,10 @@ Reseau* reconstitueReseauHachage(Chaines *C, int M){
 
 void liberer_TableHachage(TableHachage* H) {
     if (H == NULL) {
-        printf(" H est deja vide\n");
+        printf("liberer_TableHachage : H est deja vide\n");
         return;
     }
-    // Libération de chaque liste chainée de la table de hachage
+    // liberation listes chainees (cases)
     for (int i = 0; i < H->tailleMax; i++) {
         CellNoeud *temp = H->T[i];
         while (temp != NULL) {
@@ -142,9 +143,9 @@ void liberer_TableHachage(TableHachage* H) {
             temp = suivant;
         }
     }
-    // Libération du tableau de pointeurs
+    // liberation du tableau de pointeurs
     free(H->T);
-    // Libération de la structure TableHachage
+    // liberation finale du pointeur H
     free(H);
 }
 
