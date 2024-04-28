@@ -120,14 +120,15 @@ Reseau* reconstitueReseauListe(Chaines *C){
 }
 
 int nbVoisins(Noeud *nd) {
-    if (nd == NULL){
+    if (nd == NULL){ // test validite des arguments
         printf("Erreur nbVoisins : Noeud vide\n");
         return 0;
     }
 
     int cpt = 0;
     CellNoeud *temp = nd->voisins;
-    while (temp) {
+
+    while (temp){
         cpt++;
         temp = temp->suiv;
     }
@@ -135,7 +136,7 @@ int nbVoisins(Noeud *nd) {
 }
 
 int nbLiaisons(Reseau *R) {
-    if (R == NULL) {
+    if (R == NULL){ // test validite des arguments
         printf("Erreur nbLiaisons : Reseau vide\n");
         return -1;
     }
@@ -151,7 +152,7 @@ int nbLiaisons(Reseau *R) {
 }
 
 int nbCommodites(Reseau *R){
-    if (R == NULL){
+    if (R == NULL){ // test validite des arguments
         printf("Erreur nbCommodites : reseau NULL\n");
         return 0;
     }
