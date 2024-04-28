@@ -6,21 +6,21 @@
 #include "SVGwriter.h"
 
 void chaineCoordMinMax(Chaines* C, double* xmin, double* ymin, double* xmax, double* ymax) {
-    if (C == NULL) {// Vérifie si la chaîne est vide
+    if (C == NULL) {// si c vide
         printf("Erreur chaineCoordMinMax : Chaine Vide \n");
-        return;
+        return;// return direct
     }
 
     CellChaine* temp = C->chaines;
     CellPoint* premier = C->chaines->points;
-    // On initialise xmin,ymin,xmax et ymax avec les coordonnées du premier point
+    // On initialise xmin,ymin,xmax et ymax avec les coordonnees du premier point
     *xmin = premier->x;
     *ymin = premier->y;
     *xmax = premier->x;
     *ymax = premier->y;
     while (temp) { // On parcourt les chaînes
         CellPoint* p = temp->points;
-        while (p) { // On parcourt les points de la chaîne
+        while (p) { // On parcourt les points de la chaine
             if (p->x < *xmin){ // Si p->x < xmin alors xmin = p->x
                 *xmin = p->x;
             } 
@@ -35,7 +35,7 @@ void chaineCoordMinMax(Chaines* C, double* xmin, double* ymin, double* xmax, dou
             } 
             p = p->suiv; // On passe au point suivant
         }
-        temp = temp->suiv; // On passe à la chaîne suivante
+        temp = temp->suiv; // On passe a la chaine suivante
     }
 }
 
@@ -56,14 +56,14 @@ ArbreQuat* creerArbreQuat(double xc, double yc, double coteX, double coteY) {
 void insererNoeudArbre(Noeud* n, ArbreQuat** a, ArbreQuat* parent) {
     // Si l'arbre est vide 
     if (*a == NULL) {
-        //crée un nouvel arbre a l'aide des données de l'arbre parent
+        //cree un nouvel arbre a l'aide des donnees de l'arbre parent
         double xc, yc, coteX, coteY;
         
         xc = parent->xc;
         yc = parent->yc;
         coteX = parent->coteX / 2;
         coteY = parent->coteY / 2;
-        // Détermine le centre de l'arbre enfant
+        // determine le centre de l'arbre enfant
         if (n->x < xc && n->y < yc) {
             xc -= coteX / 2;
             yc -= coteY / 2;
@@ -81,14 +81,14 @@ void insererNoeudArbre(Noeud* n, ArbreQuat** a, ArbreQuat* parent) {
         *a = creerArbreQuat(xc, yc, coteX, coteY);
     }
 
-    // Si l'arbre a déjà un noeud,
-    //on insère récursivement le noeud actuel et le noeud passé en paramètre
+    // Si l'arbre a deja un noeud,
+    //on insere recursivement le noeud actuel et le noeud passe en parametre
     if ((*a)->noeud != NULL) {
         insererNoeudArbre((*a)->noeud, a, *a);
         insererNoeudArbre(n, a, parent);
         (*a)->noeud = NULL;
     } else {
-        // Sinon, on recherche le sous-arbre approprié pour insérer le noeud
+        // Sinon, on recherche le sous-arbre approprie pour inserer le noeud
         ArbreQuat* sous_arbre = NULL;
         if (n->x < (*a)->xc && n->y < (*a)->yc) {
             sous_arbre = (*a)->so;
@@ -99,33 +99,33 @@ void insererNoeudArbre(Noeud* n, ArbreQuat** a, ArbreQuat* parent) {
         } else {
             sous_arbre = (*a)->ne;
         }
-        // Insère le noeud dans le sous-arbre trouvé
+        // Insere le noeud dans le sous-arbre trouve
         insererNoeudArbre(n, &sous_arbre, *a);
     }
 }
 
 Noeud* rechercheCreeNoeudArbre(Reseau* R, ArbreQuat** a, ArbreQuat* parent, double x, double y) {
-    // Si l'arbre est vide 
+    // si l'arbre est vide 
     if (*a == NULL) {
-        //crée un nouvel arbre a l'aide des données de l'arbre parent
+        //cree un nouvel arbre a l'aide des donnees de l'arbre parent
         *a = creerArbreQuat(x, y, parent->coteX / 2, parent->coteX / 2); 
-        // recherche ou crée le noeud correspondant dans la liste.
+        // recherche ou cree le noeud correspondant dans la liste.
         return rechercheCreeNoeudListe(R, x, y);
     }
 
-    // Si l'arbre a déjà un noeud avec les mêmes coordonnées 
+    // si l'arbre a deja un noeud avec les memes coordonnees 
     if ((*a)->noeud != NULL) {
         if ((*a)->noeud->x == x && (*a)->noeud->y == y) {
             //on le renvoie
             return (*a)->noeud;
         }
-        // Sinon, on recherche ou crée le noeud et on l'insère 
+        // sinon, on recherche ou cree le noeud et on l'insere 
         Noeud* n = rechercheCreeNoeudListe(R, x, y);
         insererNoeudArbre(n, a, parent);
         return n;
     }
 
-    // Sinon, on recherche le sous-arbre approprié pour continuer la recherche.
+    // sinon, on recherche le sous-arbre approprie pour continuer la recherche.
     if (x < (*a)->xc && y < (*a)->yc) {
         return rechercheCreeNoeudArbre(R, &((*a)->so), *a, x, y);
     } else if (x >= (*a)->xc && y < (*a)->yc) {
@@ -189,7 +189,7 @@ Reseau* reconstitueReseauArbre(Chaines *C){
         } 
         tempC = tempC->suiv;
     }
-    // on libère la mémoire de l'arbre qu'on a crée en haut
+    // on libere la memoire de l'arbre qu'on a cree en haut
     libererArbreQuaternaire(aq);
     return res;
 }
@@ -206,7 +206,7 @@ void libererArbreQuaternaire(ArbreQuat* a) {
 
     // si le noeude de l'arbre est n'est pas vide
     if (a->noeud != NULL) {
-        //on libère la mémoire des noeuds voisin
+        //on libère la memoire des noeuds voisin
         CellNoeud* temp = a->noeud->voisins;
         while (temp != NULL) {
             CellNoeud* temp2 = temp;
