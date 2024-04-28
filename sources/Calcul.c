@@ -8,9 +8,9 @@
 
 // pour la generation aleatoire de chaines
 #define GAMMA 3 // nombre maximal de fibres par cable
-#define NB_POINTS_CHAINE 100
-#define X_MAX 5000
-#define Y_MAX 5000
+#define NB_POINTS_CHAINE 10
+#define X_MAX 100
+#define Y_MAX 100
 
 // pour les temps de calcul
 #define TAILLE 100 // taille max de la table de hachage
@@ -54,7 +54,7 @@ Chaines* generationAleatoire(int nbChaines, int nbPointsChaine, int xmax, int ym
     return nv; 
 }
 
-/*    Plus on augmente la taille de la table de hachage et plus elle prend de temps à se terminer*/
+
 int main(){
     srand(time(NULL));
     Reseau* R = NULL;
@@ -64,7 +64,7 @@ int main(){
     clock_t temps_final = clock();
 
                                             /*     00014_burma.cha     */
-                                            /*
+                                            
     // creation chaine a partir du fichier
     f = fopen("00014_burma.cha", "r");
     c = lectureChaines(f);
@@ -99,9 +99,9 @@ int main(){
     // liberation memoire allouee pour chaine c
     liberer_chaines(c);
     
-    */
+    
                                             /*     05000_USA-road-d-NY.cha     */
-                                           /*
+                                           
     // creation chaine a partir du fichier
     FILE * f2 = fopen("05000_USA-road-d-NY.cha", "r");
     Chaines* c2 = lectureChaines(f2);
@@ -132,10 +132,10 @@ int main(){
     // liberation memoire allouee pour Chaines*
     liberer_chaines(c2);
     
-    */
+    
 
                                                 /*     07397_pla.cha     */
-                                                /*
+                                                
     // creation chaine a partir du fichier
     FILE * f3 = fopen("07397_pla.cha", "r");
     Chaines* c3 = lectureChaines(f3);
@@ -167,9 +167,9 @@ int main(){
     // liberation de la memoire des chaines et réseau
     liberer_chaines(c3);
     
-*/
+
     /*     Quand la chaine est généré aléatoirement       */
-    /*
+    
     // ouverture et ecriture 1ere ligne dans le fichier de sortie
     FILE * f4 = fopen("temps_calcul.txt","w"); // fichier pour table de hachage et arbre quaternaire
     fprintf(f4, "# nbPointsTotal liste_chainee table_hachage arbre_quaternaire\n");
@@ -205,9 +205,9 @@ int main(){
     }
     fclose(f4);
     
-*/
+
     /*  Taille de la table de Hachage varie  */
-/*
+
     FILE * fH1 = fopen("temps_hachage1.txt","w");
     fprintf(fH1, "taille 00014_burma.cha 05000_USA-road-d-NY.cha 07397_pla.cha\n");
 
@@ -225,21 +225,21 @@ int main(){
     
     for (int i=500; i<=50000; i+=5000){
 
-        // liste chainee
+        // 00014_burma.cha
         temps_initial = clock();
         R = reconstitueReseauHachage(C1, i);
         temps_final = clock();
         double temps_cpu = ((double)(temps_final - temps_initial)) / CLOCKS_PER_SEC;
         liberer_reseau(R);
 
-        // table de hachage 
+        // 05000_USA-road-d-NY.cha
         temps_initial = clock();
         R = reconstitueReseauHachage(C2, i);
         temps_final = clock();
         double temps_cpu2 = ((double)(temps_final - temps_initial)) / CLOCKS_PER_SEC;
         liberer_reseau(R);
         
-        // arbre quaternaire
+        // 07397_pla.cha
         temps_initial = clock();
         R = reconstitueReseauHachage(C3, i);
         temps_final = clock();
@@ -255,7 +255,7 @@ int main(){
     liberer_chaines(C2);
     liberer_chaines(C3);
     fclose(fH1);
-    */
+    
     //      AVEC CHAINE ALEATOIRE 
 
     //  TAILLE 500
@@ -314,5 +314,6 @@ int main(){
     }
         
     fclose(fH4);
+    
     return 0;
 }

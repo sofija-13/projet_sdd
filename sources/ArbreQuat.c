@@ -99,11 +99,10 @@ void insererNoeudArbre(Noeud* n, ArbreQuat** a, ArbreQuat* parent) {
         } else {
             sous_arbre = (*a)->ne;
         }
-        // Insère le nœud dans le sous-arbre trouvé.
+        // Insère le nœud dans le sous-arbre trouvé
         insererNoeudArbre(n, &sous_arbre, *a);
     }
 }
-
 
 Noeud* rechercheCreeNoeudArbre(Reseau* R, ArbreQuat** a, ArbreQuat* parent, double x, double y) {
     // Si l'arbre est vide 
@@ -197,8 +196,7 @@ Reseau* reconstitueReseauArbre(Chaines *C){
 
 void libererArbreQuaternaire(ArbreQuat* a) {
     if (a == NULL) {//si arbre vide
-        printf(" arbre deja vide\n");
-        return;//return direct
+        return;//return 
     }
     // on libère récursivement la mémoire pour chaque sous-arbre
     libererArbreQuaternaire(a->so);

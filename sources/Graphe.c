@@ -27,7 +27,7 @@ Graphe* creerGraphe(Reseau* R) {
         G->T_som[i]->num = tempCN->nd->num; // Numéro du sommet
         G->T_som[i]->x = tempCN->nd->x; // Coordonnées x du sommet
         G->T_som[i]->y = tempCN->nd->y; // Coordonnées y du sommet
-        G->T_som[i]->L_voisin = NULL; // Initialise la liste des voisins à NULL
+        G->T_som[i]->L_voisin = NULL; 
         tempCN = tempCN->suiv;
     }
 
@@ -69,12 +69,12 @@ Graphe* creerGraphe(Reseau* R) {
 }
 
 void liberer_graphe(Graphe* G) {
-    if (G == NULL) {
+    if (G == NULL) {//si G est vide
         printf(" G est deja vide\n");
-        return; // Vérifie si le graphe est NULL
+        return; // return direct
     }
 
-    // Libère la mémoire allouée pour chaque sommet
+    // on libère la mémoire allouée pour chaque sommet
     for (int i = 0; i < G->nbsom; i++) {
         Cellule_arete* temp = G->T_som[i]->L_voisin;
         while (temp != NULL) {
@@ -85,86 +85,111 @@ void liberer_graphe(Graphe* G) {
         }
         free(G->T_som[i]);
     }
-    free(G->T_som); // Libère la mémoire allouée pour le tableau de pointeurs de sommets
-    free(G->T_commod); // Libère la mémoire du tableau des commodités
+    free(G->T_som); // on libère la mémoire allouée pour le tableau de pointeurs de sommets
+    free(G->T_commod); // on libère la mémoire du tableau des commodités
 
     free(G); // Libère la mémoire du graphe 
 }
 
 int plusPetitNbAretes(Graphe* G, int u, int v) {
+    // Tableau pour stocker les distances entre le sommet u et les autres sommets
     int dist[G->nbsom];
+    // Initialise toutes les distances à une valeur maximale, sauf pour le sommet u
     for (int i = 0; i < G->nbsom; i++)
         dist[i] = INT32_MAX;
     dist[u] = 0;
+    // File pour parcourir les sommets en largeur d'abord
     S_file *f = (S_file *)malloc(sizeof(S_file));
     Init_file(f);
     enfile(f, u);
+    // on fait un parcours en largeur pour calculer les distances
     while (dist[v] == INT32_MAX) {
         int n = defile(f);
         Cellule_arete* temp = G->T_som[n]->L_voisin;
         while(temp != NULL) {
             int m;
+            // détermine l'autre extrémité de l'arête
             if (n == temp->a->u) {
             m = temp->a->v;
             } else {
             m = temp->a->u;
             }
+            // On met à jour la distance si le sommet n'a pas encore été visité
             if (dist[m] == INT32_MAX) {
                 dist[m] = dist[n] + 1;
+                //on ajoute le sommet à la file pour l'explorer plus tard
                 enfile(f, m);
             }
             temp = temp->suiv;
         }
     }
+    // on vide la file
     while (!estFileVide(f))
         defile(f);
     free(f);
+    // on retourne la distance entre les sommets u et v
     return dist[v];
 }
 
 int* plusCourtChemin(Graphe* G, int u, int v) {
+    // tableau pour stocker les distances entre le sommet u et les autres sommets
     int dist[G->nbsom];
+    // tableau pour stocker les prédécesseurs de chaque sommet sur le chemin le plus court
     int pred[G->nbsom];
+    // on initialise toutes les distances à une valeur maximale, sauf pour le sommet u
     for (int i = 0; i < G->nbsom; i++)
         dist[i] = INT32_MAX;
     dist[u] = 0;
+    // File pour parcourir les sommets en largeur 
     S_file *f = (S_file *)malloc(sizeof(S_file));
     Init_file(f);
     enfile(f, u);
+    //On parcours en largeur pour calculer les distances et les prédécesseurs
     while (dist[v] == INT32_MAX) {
         int n = defile(f);
+        // parcourt les voisins du sommet actuel
         Cellule_arete* temp = G->T_som[n]->L_voisin;
         while(temp != NULL) {
             int m;
+            // détermine l'autre extrémité de l'arête
             if (temp->a->u == n) {
             m = temp->a->v;
             } else {
             m = temp->a->u;
             }
+            //On met à jour la distance et le prédécesseur si le sommet n'a pas encore été visité
             if (dist[m] == INT32_MAX) {
                 dist[m] = dist[n] + 1;
                 pred[m] = n;
+                //on ajoute le sommet à la file pour l'explorer plus tard
                 enfile(f, m);
             }
             temp = temp->suiv;
         }
     }
+    // On vide la file
     while (!estFileVide(f))
         defile(f);
     free(f);
+    // On alloue de la mémoire pour le tableau qui stockera le chemin
     int *chemin = (int *)malloc((dist[v]+1)*sizeof(int));
     int n = v;
     int i = 0;
+    // On reconstitue le chemin en parcourant les prédécesseurs à partir du sommet v.
     while (n != u) {
         chemin[i++] = n;
         n = pred[n];
     }
-    chemin[i] = u;
+    chemin[i] = u;// On ajoute le sommet u au début du chemin
     return chemin;
 }
 
 int reorganiseReseau(Reseau* R) {
-    // Création du graphe correspondant au réseau
+    if (R == NULL) { // si R vide 
+        printf("Erreur reorganiseReseau : R est vide\n");
+        return -1;//return direct
+    }
+    // Création du graphe
     Graphe* G = creerGraphe(R);
     // Initialisation de la matrice de comptage des chaînes passant par chaque arête
     int** m = (int**)malloc(G->nbsom * sizeof(int*));
@@ -187,9 +212,11 @@ int reorganiseReseau(Reseau* R) {
         free(pcc);
     }
     
-    // Vérification si le nombre de chaînes passant par chaque arête est inférieur à γ
+    // Vérification si le nombre de chaînes passant par chaque arête est inférieur à gamma
     for (int i = 0; i < G->nbsom; i++) {
         for (int j = 0; j < G->nbsom; j++) {
+            // Pour chaque paire de sommets (i, j), où i et j sont les indices des sommets dans le graphe
+            // Si le nombre de chaînes passant par l'arête (i, j) dépasse gamma
             if (m[i][j] > G->gamma) {
                 // Libération de la mémoire allouée pour le graphe et la matrice
                 for (int k = 0; k < G->nbsom; k++) {
@@ -197,21 +224,21 @@ int reorganiseReseau(Reseau* R) {
                 }
                 free(m);
                 liberer_graphe(G);
-                return 0; // Faux, le réseau ne peut pas être réorganisé
+                return 1; // Faux, le réseau ne peut pas être réorganisé
             }
         }
     }
     
-    // Libération de la mémoire allouée pour la matrice
+    // On libère la mémoire de la matrice
     for (int i = 0; i < G->nbsom; i++) {
         free(m[i]);
     }
     free(m);
     
-    // Libération de la mémoire allouée pour le graphe
+    // On libère la mémoire du graphe
     liberer_graphe(G);
     
-    return 1; // Vrai, le réseau peut être réorganisé
+    return 0; // Vrai, le réseau peut être réorganisé
 }
 
 
