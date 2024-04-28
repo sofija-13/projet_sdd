@@ -3,3 +3,5 @@ set ylabel "Temps en seconde"
 plot "temps_hachage1.txt" using 1:2 with lines title "00014_burma.cha"
 replot "temps_hachage1.txt" using 1:3 with lines title "05000_USA-road-d-NY.cha"
 replot "temps_hachage1.txt" using 1:4 with lines title "07397pla.cha"
+
+

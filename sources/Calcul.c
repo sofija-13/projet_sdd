@@ -258,7 +258,7 @@ int main(){
     //      AVEC CHAINE ALEATOIRE 
 
     FILE * fH2 = fopen("temps_hachage2.txt","w");
-    fprintf(fH2, "taille nbpoints tempsH\n");
+    fprintf(fH2, "taille, nbpoints, tempsH\n");
     Chaines * C = NULL;
     for (int i=500; i<=50000; i+=5000){
 
@@ -272,7 +272,7 @@ int main(){
             liberer_reseau(R);
             
             // ecriture dans fichier
-            fprintf(fH2,"%d %d %lf \n", i,j, temps_cpu);
+            fprintf(fH2,"%d, %d, %lf \n", i,j, temps_cpu);
             liberer_chaines(C);
         }
         
