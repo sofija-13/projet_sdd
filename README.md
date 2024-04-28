@@ -1,10 +1,7 @@
 # Réorganisation d’un réseau de fibres optiques
 
-## Auteures et remerciements
+## Auteures
 GRANET Sofija & ZHANG Élodie
-
-Tracé des graphes réalisé grâce au programme python plot.py de Nicolas Bredeche (nicolas.bredeche@sorbonne-universite.fr), récupéré dans l'UE LU2IN013 - Projet de développement
-Merci !
 
 ## Contexte
 Sorbonne Université - Licence mention Informatique
@@ -15,4 +12,4 @@ Projet : Réorganisation d’un réseau de fibres optiques
 CC-BY-SA
 
 ## État du projet
-En cours...
+Terminé
