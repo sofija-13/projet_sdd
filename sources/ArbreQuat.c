@@ -88,7 +88,7 @@ void insererNoeudArbre(Noeud* n, ArbreQuat** a, ArbreQuat* parent) {
         insererNoeudArbre(n, a, parent);
         (*a)->noeud = NULL;
     } else {
-        // Sinon, on recherche le sous-arbre approprié pour insérer le nœud
+        // Sinon, on recherche le sous-arbre approprié pour insérer le noeud
         ArbreQuat* sous_arbre = NULL;
         if (n->x < (*a)->xc && n->y < (*a)->yc) {
             sous_arbre = (*a)->so;
@@ -99,7 +99,7 @@ void insererNoeudArbre(Noeud* n, ArbreQuat** a, ArbreQuat* parent) {
         } else {
             sous_arbre = (*a)->ne;
         }
-        // Insère le nœud dans le sous-arbre trouvé
+        // Insère le noeud dans le sous-arbre trouvé
         insererNoeudArbre(n, &sous_arbre, *a);
     }
 }
