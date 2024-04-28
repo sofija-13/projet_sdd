@@ -29,7 +29,8 @@ Noeud* rechercheCreeNoeudArbre(Reseau* R, ArbreQuat** a, ArbreQuat *parent, doub
 //rechercher ou créer un nœud dans l'arbre quaternaire
 
 Reseau* reconstitueReseauArbre(Chaines* C);
-//
+//Reconstitue le réseau
 
 void libererArbreQuaternaire(ArbreQuat* a);
+//libère la mémoire allouée pour l'arbre
 #endif

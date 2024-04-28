@@ -8,9 +8,9 @@
 
 // pour la generation aleatoire de chaines
 #define GAMMA 3 // nombre maximal de fibres par cable
-#define NB_POINTS_CHAINE 10
-#define X_MAX 100
-#define Y_MAX 100
+#define NB_POINTS_CHAINE 100
+#define X_MAX 5000
+#define Y_MAX 5000
 
 // pour les temps de calcul
 #define TAILLE 100 // taille max de la table de hachage
@@ -58,15 +58,16 @@ Chaines* generationAleatoire(int nbChaines, int nbPointsChaine, int xmax, int ym
 int main(){
     srand(time(NULL));
     Reseau* R = NULL;
+    Chaines* c = NULL;
     FILE* f = NULL;
     clock_t temps_initial = clock();
     clock_t temps_final = clock();
 
                                             /*     00014_burma.cha     */
-                                            
+                                            /*
     // creation chaine a partir du fichier
     f = fopen("00014_burma.cha", "r");
-    Chaines* c = lectureChaines(f);
+    c = lectureChaines(f);
     fclose(f);
 
     f = fopen("temps_fichier.txt","w");
@@ -98,9 +99,9 @@ int main(){
     // liberation memoire allouee pour chaine c
     liberer_chaines(c);
     
-    
+    */
                                             /*     05000_USA-road-d-NY.cha     */
-                                           
+                                           /*
     // creation chaine a partir du fichier
     FILE * f2 = fopen("05000_USA-road-d-NY.cha", "r");
     Chaines* c2 = lectureChaines(f2);
@@ -131,10 +132,10 @@ int main(){
     // liberation memoire allouee pour Chaines*
     liberer_chaines(c2);
     
-    
+    */
 
                                                 /*     07397_pla.cha     */
-                                                
+                                                /*
     // creation chaine a partir du fichier
     FILE * f3 = fopen("07397_pla.cha", "r");
     Chaines* c3 = lectureChaines(f3);
@@ -166,9 +167,9 @@ int main(){
     // liberation de la memoire des chaines et réseau
     liberer_chaines(c3);
     
-
+*/
     /*     Quand la chaine est généré aléatoirement       */
-    
+    /*
     // ouverture et ecriture 1ere ligne dans le fichier de sortie
     FILE * f4 = fopen("temps_calcul.txt","w"); // fichier pour table de hachage et arbre quaternaire
     fprintf(f4, "# nbPointsTotal liste_chainee table_hachage arbre_quaternaire\n");
@@ -204,9 +205,9 @@ int main(){
     }
     fclose(f4);
     
-
+*/
     /*  Taille de la table de Hachage varie  */
-
+/*
     FILE * fH1 = fopen("temps_hachage1.txt","w");
     fprintf(fH1, "taille 00014_burma.cha 05000_USA-road-d-NY.cha 07397_pla.cha\n");
 
@@ -254,29 +255,64 @@ int main(){
     liberer_chaines(C2);
     liberer_chaines(C3);
     fclose(fH1);
-    
+    */
     //      AVEC CHAINE ALEATOIRE 
 
-    FILE * fH2 = fopen("temps_hachage2.txt","w");
-    fprintf(fH2, "taille, nbpoints, tempsH\n");
+    //  TAILLE 500
+    FILE * fH2 = fopen("temps_hachage_500.txt","w");
+    fprintf(fH2, "nbpoints tempsH\n");
     Chaines * C = NULL;
-    for (int i=500; i<=50000; i+=5000){
+    for (int j=500; j<=5000; j+=500){
+        C = generationAleatoire(j, NB_POINTS_CHAINE, X_MAX, Y_MAX);
 
-        for (int j=500; j<=5000; j+=500){
-            C = generationAleatoire(j, NB_POINTS_CHAINE, X_MAX, Y_MAX);
-
-            temps_initial = clock();
-            R = reconstitueReseauHachage(C, i);
-            temps_final = clock();
-            double temps_cpu = ((double)(temps_final - temps_initial)) / CLOCKS_PER_SEC;
-            liberer_reseau(R);
-            
-            // ecriture dans fichier
-            fprintf(fH2,"%d, %d, %lf \n", i,j, temps_cpu);
-            liberer_chaines(C);
-        }
+        temps_initial = clock();
+        R = reconstitueReseauHachage(C, 500);
+        temps_final = clock();
+        double temps_cpu = ((double)(temps_final - temps_initial)) / CLOCKS_PER_SEC;
+        liberer_reseau(R);
         
+        // ecriture dans fichier
+        fprintf(fH2," %d %lf \n",j, temps_cpu);
+        liberer_chaines(C);
     }
     fclose(fH2);
+
+    //  TAILLE 5000
+    FILE * fH3 = fopen("temps_hachage_5000.txt","w");
+    fprintf(fH3, "nbpoints tempsH\n");
+
+    for (int j=500; j<=5000; j+=500){
+        C = generationAleatoire(j, NB_POINTS_CHAINE, X_MAX, Y_MAX);
+        temps_initial = clock();
+        R = reconstitueReseauHachage(C, 5000);
+        temps_final = clock();
+        double temps_cpu = ((double)(temps_final - temps_initial)) / CLOCKS_PER_SEC;
+        liberer_reseau(R);
+        
+        // ecriture dans fichier
+        fprintf(fH3," %d %lf \n",j, temps_cpu);
+        liberer_chaines(C);
+    }
+    fclose(fH3);
+
+    //  TAILLE 50 000
+    FILE * fH4 = fopen("temps_hachage_50000.txt","w");
+    fprintf(fH4, "nbpoints tempsH\n");
+
+    for (int j=500; j<=5000; j+=500){
+        C = generationAleatoire(j, NB_POINTS_CHAINE, X_MAX, Y_MAX);
+
+        temps_initial = clock();
+        R = reconstitueReseauHachage(C, 50000);
+        temps_final = clock();
+        double temps_cpu = ((double)(temps_final - temps_initial)) / CLOCKS_PER_SEC;
+        liberer_reseau(R);
+        
+        // ecriture dans fichier
+        fprintf(fH4," %d %lf \n",j, temps_cpu);
+        liberer_chaines(C);
+    }
+        
+    fclose(fH4);
     return 0;
 }

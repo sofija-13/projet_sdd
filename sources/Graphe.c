@@ -7,20 +7,20 @@
 
 
 Graphe* creerGraphe(Reseau* R) {
-    if (R == NULL || R->nbNoeuds == 0) { // Vérifie si le réseau est valide et non vide
+    if (R == NULL || R->nbNoeuds == 0) { // si vide
         printf("Erreur creerGraphe : Réseau NULL ou vide.\n");
-        return NULL;
+        return NULL;//return direct
     }
 
-    // Alloue de la mémoire pour le graphe
+    // Creation du graphe
     Graphe* G = (Graphe*)malloc(sizeof(Graphe)); 
-    G->nbsom = R->nbNoeuds; // Nombre de sommets dans le graphe
-    G->gamma = R->gamma; // Nombre maximal de fibres par câble
+    G->nbsom = R->nbNoeuds; 
+    G->gamma = R->gamma; 
     G->T_som = (Sommet**)malloc(G->nbsom * sizeof(Sommet*)); // Alloue de la mémoire pour le tableau de pointeurs de sommets
     G->nbcommod = 0;
     G->T_commod = NULL;
 
-    // Initialisation des sommets du graphe
+    // Création des sommets du graphe
     CellNoeud* tempCN = R->noeuds;
     for (int i = 0; i < G->nbsom; i++) {
         G->T_som[i] = (Sommet*)malloc(sizeof(Sommet)); // Alloue de la mémoire pour un sommet
@@ -57,6 +57,7 @@ Graphe* creerGraphe(Reseau* R) {
         tempCN = tempCN->suiv;
     }
 
+    // Création des sommets du graphe
     CellCommodite* tempCom = R->commodites;
     for (int i = 0; i < G->nbcommod; i++) {
         G->T_commod[i].e1 = tempCom->extrA->num;

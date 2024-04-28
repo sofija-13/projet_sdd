@@ -7,7 +7,7 @@
 
 void chaineCoordMinMax(Chaines* C, double* xmin, double* ymin, double* xmax, double* ymax) {
     if (C == NULL) {// Vérifie si la chaîne est vide
-        printf("Chaine Vide \n");
+        printf("Erreur chaineCoordMinMax : Chaine Vide \n");
         return;
     }
 
@@ -54,15 +54,16 @@ ArbreQuat* creerArbreQuat(double xc, double yc, double coteX, double coteY) {
 }
 
 void insererNoeudArbre(Noeud* n, ArbreQuat** a, ArbreQuat* parent) {
-    // Si l'arbre est vide, crée un nouvel arbre avec les coordonnées du nœud et ses dimensions divisées par deux.
+    // Si l'arbre est vide 
     if (*a == NULL) {
+        //crée un nouvel arbre a l'aide des données de l'arbre parent
         double xc, yc, coteX, coteY;
         
         xc = parent->xc;
         yc = parent->yc;
         coteX = parent->coteX / 2;
         coteY = parent->coteY / 2;
-        // Réorganise les coordonnées de l'arbre en fonction de la position du nœud.
+        // Détermine le centre de l'arbre enfant
         if (n->x < xc && n->y < yc) {
             xc -= coteX / 2;
             yc -= coteY / 2;
@@ -76,20 +77,18 @@ void insererNoeudArbre(Noeud* n, ArbreQuat** a, ArbreQuat* parent) {
             xc += coteX / 2;
             yc += coteY / 2;
         }
-        
-
-        // Crée un nouvel arbre avec les nouvelles coordonnées.
+        //creation de l'arbre
         *a = creerArbreQuat(xc, yc, coteX, coteY);
-        
     }
 
-    // Si l'arbre a déjà un nœud, insère récursivement le nœud actuel et le nœud passé en paramètre.
+    // Si l'arbre a déjà un noeud,
+    //on insère récursivement le noeud actuel et le noeud passé en paramètre
     if ((*a)->noeud != NULL) {
         insererNoeudArbre((*a)->noeud, a, *a);
         insererNoeudArbre(n, a, parent);
         (*a)->noeud = NULL;
     } else {
-        // Sinon, recherche le sous-arbre approprié pour insérer le nœud.
+        // Sinon, on recherche le sous-arbre approprié pour insérer le nœud
         ArbreQuat* sous_arbre = NULL;
         if (n->x < (*a)->xc && n->y < (*a)->yc) {
             sous_arbre = (*a)->so;
@@ -107,25 +106,27 @@ void insererNoeudArbre(Noeud* n, ArbreQuat** a, ArbreQuat* parent) {
 
 
 Noeud* rechercheCreeNoeudArbre(Reseau* R, ArbreQuat** a, ArbreQuat* parent, double x, double y) {
-    // Si l'arbre est vide, crée un nouvel arbre avec les coordonnées spécifiées.
+    // Si l'arbre est vide 
     if (*a == NULL) {
+        //crée un nouvel arbre a l'aide des données de l'arbre parent
         *a = creerArbreQuat(x, y, parent->coteX / 2, parent->coteX / 2); 
-        // Recherche ou crée le nœud correspondant dans la liste.
+        // recherche ou crée le noeud correspondant dans la liste.
         return rechercheCreeNoeudListe(R, x, y);
     }
 
-    // Si l'arbre a déjà un nœud aux mêmes coordonnées, le renvoie.
+    // Si l'arbre a déjà un noeud avec les mêmes coordonnées 
     if ((*a)->noeud != NULL) {
         if ((*a)->noeud->x == x && (*a)->noeud->y == y) {
+            //on le renvoie
             return (*a)->noeud;
         }
-        // Sinon, recherche ou crée le nœud correspondant dans l'arbre et insère le nœud actuel.
+        // Sinon, on recherche ou crée le noeud et on l'insère 
         Noeud* n = rechercheCreeNoeudListe(R, x, y);
         insererNoeudArbre(n, a, parent);
         return n;
     }
 
-    // Sinon, recherche le sous-arbre approprié pour continuer la recherche.
+    // Sinon, on recherche le sous-arbre approprié pour continuer la recherche.
     if (x < (*a)->xc && y < (*a)->yc) {
         return rechercheCreeNoeudArbre(R, &((*a)->so), *a, x, y);
     } else if (x >= (*a)->xc && y < (*a)->yc) {
@@ -139,9 +140,9 @@ Noeud* rechercheCreeNoeudArbre(Reseau* R, ArbreQuat** a, ArbreQuat* parent, doub
 
 
 Reseau* reconstitueReseauArbre(Chaines *C){
-    if (C == NULL || C->nbChaines == 0) { // test validite des arguments
+    if (C == NULL || C->nbChaines == 0) { // si arbre vide 
         printf("Erreur reconstitueReseauArbre : C == NULL ou 0 chaine\n");
-        return NULL;
+        return NULL;//return direct
     }
     // nouveau reseau
     Reseau* res = (Reseau*)malloc(sizeof(Reseau));
@@ -166,25 +167,20 @@ Reseau* reconstitueReseauArbre(Chaines *C){
     CellChaine *tempC = C->chaines;
     while(tempC){
         CellPoint *tempP = tempC->points;
-
         // premier noeud de la chaine
         Noeud* n1 = rechercheCreeNoeudArbre(res, &aq, aq, tempP->x, tempP->y);
-
-        // "pour chaque point de la chaine"
+        // pour chaque point de la chaine
         while (tempP->suiv){
             // noeud suivant
             Noeud* n2 = rechercheCreeNoeudArbre(res, &aq, aq, tempP->suiv->x, tempP->suiv->y);
-            
             if (rechercheVoisin(n1, n2) == 0){ // si n2 n'est pas deja dans la liste des voisins de n1
                 ajouterVoisin(n1, n2);
                 ajouterVoisin(n2, n1);
             }
-
             n1 = n2;
             tempP = tempP->suiv;
         }
-
-        // "on conserve la commodite de la chaine"        
+        // on conserve la commodite de la chaine     
         CellCommodite* tempCom = (CellCommodite*)malloc(sizeof(CellCommodite));
         if (tempCom != NULL) {
             tempCom->extrA = n1;
@@ -194,31 +190,34 @@ Reseau* reconstitueReseauArbre(Chaines *C){
         } 
         tempC = tempC->suiv;
     }
-
+    // on libère la mémoire de l'arbre qu'on a crée en haut
     libererArbreQuaternaire(aq);
-
     return res;
 }
 
 void libererArbreQuaternaire(ArbreQuat* a) {
-    if (a == NULL) {
-        return;
+    if (a == NULL) {//si arbre vide
+        printf(" arbre deja vide\n");
+        return;//return direct
     }
-
+    // on libère récursivement la mémoire pour chaque sous-arbre
     libererArbreQuaternaire(a->so);
     libererArbreQuaternaire(a->se);
     libererArbreQuaternaire(a->no);
     libererArbreQuaternaire(a->ne);
 
+    // si le noeude de l'arbre est n'est pas vide
     if (a->noeud != NULL) {
+        //on libère la mémoire des noeuds voisin
         CellNoeud* temp = a->noeud->voisins;
         while (temp != NULL) {
             CellNoeud* temp2 = temp;
             temp = temp->suiv;
             free(temp2);
         }
+        //du noeud 
         free(a->noeud);
     }
-
+    //puis de l'arbre
     free(a);
 }
