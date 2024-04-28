@@ -38,6 +38,7 @@ double longueurTotale(Chaines *C);
 // calcule la longueur physique d'une chaine
 
 int comptePointsTotal(Chaines *C);
+// compte le nombre total de points
 
 void liberer_chaines(Chaines *C);
 // libere la memoire allouee 

@@ -40,20 +40,16 @@ void chaineCoordMinMax(Chaines* C, double* xmin, double* ymin, double* xmax, dou
 }
 
 ArbreQuat* creerArbreQuat(double xc, double yc, double coteX, double coteY) {
-
     ArbreQuat* aq = (ArbreQuat*)malloc(sizeof(ArbreQuat));
-
     aq->xc = xc;
     aq->yc = yc;
     aq->coteX = coteX;
     aq->coteY = coteY;
-
     aq->noeud = NULL;
     aq->so = NULL;
     aq->se = NULL;
     aq->no = NULL;
     aq->ne = NULL;
-
     return aq;
 }
 
@@ -195,11 +191,7 @@ Reseau* reconstitueReseauArbre(Chaines *C){
             tempCom->extrB = rechercheCreeNoeudArbre(res, &aq, aq, tempC->points->x, tempC->points->y);
             tempCom->suiv = res->commodites;
             res->commodites = tempCom;
-        } else {
-            printf("Erreur reconstitueReseauArbre : échec malloc commodité\n");
-            return NULL;
-        }
-    
+        } 
         tempC = tempC->suiv;
     }
 
@@ -219,11 +211,11 @@ void libererArbreQuaternaire(ArbreQuat* a) {
     libererArbreQuaternaire(a->ne);
 
     if (a->noeud != NULL) {
-        CellNoeud* current_voisin = a->noeud->voisins;
-        while (current_voisin != NULL) {
-            CellNoeud* temp = current_voisin;
-            current_voisin = current_voisin->suiv;
-            free(temp);
+        CellNoeud* temp = a->noeud->voisins;
+        while (temp != NULL) {
+            CellNoeud* temp2 = temp;
+            temp = temp->suiv;
+            free(temp2);
         }
         free(a->noeud);
     }

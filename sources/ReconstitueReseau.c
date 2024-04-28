@@ -43,7 +43,7 @@ int main(int argc, char** argv){
     }
 
     // test fonction de reconstitution
-    FILE *f2 = fopen("test_00014.res", "w");
+    FILE *f2 = fopen("test_reconstitution.res", "w");
     ecrireReseau(R, f2);
     fclose(f2);
     

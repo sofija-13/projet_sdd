@@ -31,13 +31,6 @@ typedef struct {
     CellCommodite *commodites;      /* Liste des commodites a relier */
 } Reseau;
 
-typedef struct couple{ // liste chainee des liaisons deja rencontrees
-    int A; // num noeud a
-    int B; // num noeud b
-    struct couple *suiv; 
-} Couple;
-
-typedef Couple* ListeCouple;
 
 Noeud* rechercheCreeNoeudListe(Reseau *R, double x, double y);
 // retourne un Noeud du reseau R correspondant au point (x, y) s'il est dans la liste des noeuds de R, le cree sinon
@@ -59,12 +52,6 @@ int nbCommodites(Reseau *R);
 
 int nbVoisins(Noeud *nd);
 // compte le nombre de voisin d'un noeud
-
-ListeCouple ajouter_couple(ListeCouple l, int a, int b);
-// ajoute le couple (a,b) dans liste de couples l
-
-int dejaVu(ListeCouple l, int a, int b);
-// renvoie vrai si (a, b) est dans la liste de couples l
 
 void ecrireReseau(Reseau *R, FILE *f);
 //

@@ -7,7 +7,7 @@
 
 Noeud* rechercheCreeNoeudListe(Reseau *R, double x, double y){
     if (R==NULL){ // test validite arguments
-        printf("Erreur rechercheCreeNoeudListe : reseau NULL\n");
+        printf("Erreur rechercheCreeNoeudListe : R vide\n");
         return NULL;
     }
 
@@ -21,35 +21,35 @@ Noeud* rechercheCreeNoeudListe(Reseau *R, double x, double y){
     }
     
     //creation nouveau CellNoeud car absent
-    CellNoeud *nouveau = (CellNoeud*) malloc(sizeof(CellNoeud));
-    nouveau->nd = (Noeud*)malloc(sizeof(Noeud));
-    nouveau->nd->num = (R->nbNoeuds)+1;
-    nouveau->nd->x = x;
-    nouveau->nd->y = y;
-    nouveau->nd->voisins = NULL;
+    CellNoeud *nv = (CellNoeud*) malloc(sizeof(CellNoeud));
+    nv->nd = (Noeud*)malloc(sizeof(Noeud));
+    nv->nd->num = (R->nbNoeuds)+1;
+    nv->nd->x = x;
+    nv->nd->y = y;
+    nv->nd->voisins = NULL;
 
     //ajout en tete de R->noeuds
-    nouveau->suiv = R->noeuds;
-    R->noeuds = nouveau;
+    nv->suiv = R->noeuds;
+    R->noeuds = nv;
     R->nbNoeuds++;
 
-    return nouveau->nd;
+    return nv->nd;
 }
 
 int rechercheVoisin(Noeud *nd1, Noeud *nd2){
     // test validite des arguments
     if (nd1 == NULL || nd2 == NULL){
-        printf("Erreur rechercheVoisin : argument NULL\n");
+        printf("Erreur rechercheVoisin : argument vide\n");
         return -1;
     }
 
     // parcours de la liste des voisins de nd1 pour voir si nd2 est deja voisin
-    CellNoeud *voisin = nd1->voisins;
-    while(voisin){
-        if (voisin->nd == nd2) {
+    CellNoeud *temp = nd1->voisins;
+    while(temp){
+        if (temp->nd == nd2) {
             return 1; // nd2 est voisin de nd1
         }
-        voisin = voisin->suiv;
+        temp = temp->suiv;
     }
 
     return 0; // nd2 n'est pas voisin de nd1
@@ -58,23 +58,17 @@ int rechercheVoisin(Noeud *nd1, Noeud *nd2){
 void ajouterVoisin(Noeud* noeud, Noeud* voisin) {
     // test validite des arguments
     if (noeud == NULL || voisin == NULL) {
-        printf("Erreur ajouterVoisin : argument NULL\n");
+        printf("Erreur ajouterVoisin : argument vide\n");
         return;
     }
 
     // Allocation de mémoire pour la nouvelle cellule de voisin
-    CellNoeud* nouveau_voisin = (CellNoeud*)malloc(sizeof(CellNoeud));
-    if (nouveau_voisin == NULL) {
-        printf("Erreur d'allocation de mémoire pour la cellule de voisin\n");
-        return;
-    }
-
-    // Attribution du voisin au nouveau voisin
-    nouveau_voisin->nd = voisin;
-    nouveau_voisin->suiv = noeud->voisins;
+    CellNoeud* temp = (CellNoeud*)malloc(sizeof(CellNoeud));
+    temp->nd = voisin;
+    temp->suiv = noeud->voisins;
 
     // Mise à jour de la liste des voisins du noeud
-    noeud->voisins = nouveau_voisin;
+    noeud->voisins = temp;
 }
 
 Reseau* reconstitueReseauListe(Chaines *C){
@@ -84,10 +78,6 @@ Reseau* reconstitueReseauListe(Chaines *C){
     }
     // nouveau reseau
     Reseau* res = (Reseau*)malloc(sizeof(Reseau));
-    if (res == NULL) {
-        printf("Erreur reconstitueReseauListe: erreur malloc pour nouveau reseau\n");
-        return NULL;
-    }
     res->nbNoeuds = 0;
     res->gamma = C->gamma;
     res->noeuds = NULL;
@@ -122,20 +112,31 @@ Reseau* reconstitueReseauListe(Chaines *C){
             tempCom->extrB = rechercheCreeNoeudListe(res, tempC->points->x, tempC->points->y);
             tempCom->suiv = res->commodites;
             res->commodites = tempCom;
-        } else {
-            printf("Erreur reconstitueReseauListe : échec malloc commodité\n");
-            return NULL;
-        }
-    
+        } 
         tempC = tempC->suiv;
     }
 
     return res;
 }
 
+int nbVoisins(Noeud *nd) {
+    if (nd == NULL) {
+        printf("Erreur nbVoisins : Noeud vide\n");
+        return 0;
+    }
+
+    int cpt = 0;
+    CellNoeud *temp = nd->voisins;
+    while (temp) {
+        cpt++;
+        temp = temp->suiv;
+    }
+    return cpt;
+}
+
 int nbLiaisons(Reseau *R) {
     if (R == NULL) {
-        printf("Erreur nbLiaisons : Reseau NULL\n");
+        printf("Erreur nbLiaisons : Reseau vide\n");
         return -1;
     }
     
@@ -159,32 +160,6 @@ int nbCommodites(Reseau *R){
     return res;
 }
 
-int nbVoisins(Noeud *nd) {
-    if (nd == NULL) {
-        printf("Erreur nbVoisins : Noeud NULL\n");
-        return 0;
-    }
-
-    int count = 0;
-    CellNoeud *voisin = nd->voisins;
-    while (voisin) {
-        count++;
-        voisin = voisin->suiv;
-    }
-    return count;
-}
-
-int dejaVu(ListeCouple l, int a, int b){
-    ListeCouple tmp = l;
-    while(l){
-        if((tmp->A == a && tmp->B ==b) || (tmp->A == b && tmp->B ==a)){
-            return 0;
-        }
-        tmp = tmp->suiv;
-    }
-    return 1;
-}
-
 void ecrireReseau(Reseau *R, FILE *f) {
     // Écrire les informations générales du réseau dans le fichier
     fprintf(f, "NbNoeuds: %d\n", R->nbNoeuds);
@@ -193,32 +168,32 @@ void ecrireReseau(Reseau *R, FILE *f) {
     fprintf(f, "Gamma: %d\n\n", R->gamma);
 
     // Écrire les coordonnées des noeuds dans le fichier
-    CellNoeud *temp_noeud = R->noeuds;
-    while (temp_noeud) {
-        fprintf(f, "v %d %lf %lf\n", temp_noeud->nd->num, temp_noeud->nd->x, temp_noeud->nd->y);
-        temp_noeud = temp_noeud->suiv;
+    CellNoeud *tempN = R->noeuds;
+    while (tempN) {
+        fprintf(f, "v %d %lf %lf\n", tempN->nd->num, tempN->nd->x, tempN->nd->y);
+        tempN = tempN->suiv;
     }
     fprintf(f, "\n");
 
     // Écrire les liaisons dans le fichier
-    temp_noeud = R->noeuds;
-    while (temp_noeud) {
-        CellNoeud *voisin = temp_noeud->nd->voisins;
-        while (voisin) {
-            if ( voisin->nd->num < temp_noeud->nd->num) {
-                fprintf(f, "l %d %d\n", voisin->nd->num,temp_noeud->nd->num );
+    tempN = R->noeuds;
+    while (tempN) {
+        CellNoeud *tempN2 = tempN->nd->voisins;
+        while (tempN2) {
+            if ( tempN2->nd->num < tempN->nd->num) {
+                fprintf(f, "l %d %d\n", tempN2->nd->num,tempN->nd->num );
             }
-            voisin = voisin->suiv;
+            tempN2 = tempN2->suiv;
         }
-        temp_noeud = temp_noeud->suiv;
+        tempN = tempN->suiv;
     }
     fprintf(f, "\n");
 
     // Écrire les commodités dans le fichier
-    CellCommodite *temp_commodite = R->commodites;
-    while (temp_commodite) {
-        fprintf(f, "k %d %d\n", temp_commodite->extrB->num, temp_commodite->extrA->num);
-        temp_commodite = temp_commodite->suiv;
+    CellCommodite *tempC = R->commodites;
+    while (tempC) {
+        fprintf(f, "k %d %d\n", tempC->extrB->num, tempC->extrA->num);
+        tempC = tempC->suiv;
     }
 }
 
@@ -253,39 +228,39 @@ void afficheReseauSVG(Reseau *R, char* nomInstance){
 void liberer_noeuds(CellNoeud *noeuds) {
     // Libération récursive des noeuds et de leurs voisins
     while (noeuds) {
-        CellNoeud *suivant_noeud = noeuds->suiv;
+        CellNoeud *temp = noeuds->suiv;
 
         // Libération des voisins du noeud
-        CellNoeud *temp_voisin = noeuds->nd->voisins;
-        while (temp_voisin) {
-            CellNoeud *suivant_voisin = temp_voisin->suiv;
-            free(temp_voisin);
-            temp_voisin = suivant_voisin;
+        CellNoeud *temp2 = noeuds->nd->voisins;
+        while (temp2) {
+            CellNoeud *temp3 = temp2->suiv;
+            free(temp2);
+            temp2 = temp3;
         }
 
         // Libération du noeud lui-même
         free(noeuds->nd);
         free(noeuds);
-        noeuds = suivant_noeud;
+        noeuds = temp;
     }
 }
 
 void liberer_reseau(Reseau *R) {
-    // Vérification de la validité de l'argument
+    // Si R deja vide 
     if (R == NULL) {
-        printf("Erreur liberer_reseau : argument NULL\n");
-        return;
+        printf("Erreur liberer_reseau : R deja vide\n");
+        return; // return direct
     }
 
     // Libération des noeuds et de leurs voisins
     liberer_noeuds(R->noeuds);
 
     // Libération des commodités
-    CellCommodite *temp_commodite = R->commodites;
-    while (temp_commodite) {
-        CellCommodite *suivant_commodite = temp_commodite->suiv;
-        free(temp_commodite);
-        temp_commodite = suivant_commodite;
+    CellCommodite *tempC = R->commodites;
+    while (tempC) {
+        CellCommodite *tempC2 = tempC->suiv;
+        free(tempC);
+        tempC = tempC2;
     }
 
     // Libération de la structure Reseau

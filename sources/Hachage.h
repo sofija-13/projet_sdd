@@ -8,11 +8,10 @@ typedef struct{
   CellNoeud** T;
 } TableHachage ;
 
-//int clef(int x, int y);
+
 double clef(double x, double y);
 // renvoie la clef associee a un point de coordonnees (x,y)
 
-//int hachage(int k, int m);
 int hachage(double k, int m);
 // renvoie l'index de la table de hachage associe a la clef k
 
@@ -22,13 +21,8 @@ void ajoutNoeudHachage(TableHachage* H, Noeud* nv);
 Noeud* rechercheCreeNoeudHachage(Reseau* R, TableHachage* H, double x, double y);
 // retourne un Noeud du reseau R correspondant au point (x,y) dans la table de hachage H (ajoute si inexistant)
 
-void liberer_hachage(TableHachage* H);
+void liberer_TableHachage(TableHachage* H);
 // libere la memoire allouee pour une TableHachage*
-
-void liberer_noeud(CellNoeud* n);
-// libere la memoire allouee pour un CellNoeud*
-
-void liberer_table_hachage(TableHachage* H);
 
 Reseau* reconstitueReseauHachage(Chaines *C, int M);
 // reconstruit le reseau a partir de la liste des chaines C, en utilisant une table de hachage H de taille M

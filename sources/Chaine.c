@@ -10,51 +10,40 @@
 
 Chaines* lectureChaines(FILE *f) {
     if (f == NULL) {
-        printf("Erreur lectureChaines : FILE f est NULL\n");
+        printf("Erreur lectureChaines : fichier vide\n");
         return NULL;
     }
 
     Chaines *nv = (Chaines*)malloc(sizeof(Chaines));
-
     fscanf(f, "NbChain: %d\n", &(nv->nbChaines));
     fscanf(f, "Gamma: %d\n", &(nv->gamma));
-
     nv->chaines = NULL;  // initialisation de la liste des chaines
 
     for (int i = 0; i < nv->nbChaines; i++) {
         CellChaine *c = (CellChaine*)malloc(sizeof(CellChaine));
-        if (c == NULL) {
-            printf("Erreur malloc dans lectureChaines\n");
-            return NULL;
-        }
         fscanf(f, "%d", &(c->numero));
-        // printf("%d\n",c->numero);
         c->points = NULL;  // Initialisation de la liste des points à NULL
-
         int nbPoints;
         fscanf(f, "%d", &nbPoints);
-
         for (int j = 0; j < nbPoints; j++) {
             CellPoint *p = (CellPoint*)malloc(sizeof(CellPoint));
             fscanf(f, "%lf %lf", &(p->x), &(p->y));
-            // printf(" x = %lf  y = %lf \n",p->x, p->y);
             p->suiv = c->points;
             c->points = p;
         }
-
         c->suiv = nv->chaines;
         nv->chaines = c;
     }
-
     return nv;
 }
 
 void ecrireChaines(Chaines *C, FILE *f){
     if (f==NULL || C==NULL){ // test validite des arguments
-        printf("ecrireChaines : argument NULL\n");
+        printf("ecrireChaines : argument vide\n");
         return;
     }
     fprintf(f, "NbChain: %d\nGamma: %d\n", C->nbChaines, C->gamma);
+    fprintf(f, "\n");
     CellChaine *temp = C->chaines;
     while (temp){
         int nb_points=0;
@@ -80,7 +69,6 @@ void afficheChainesSVG(Chaines *C, char* nomInstance){
         printf("afficheChainesSVG : argument NULL\n");
         return;
     }
-    // int i;
     double maxx=0, maxy=0, minx=1e6, miny=1e6;
     CellChaine *ccour;
     CellPoint *pcour;
@@ -119,25 +107,25 @@ void afficheChainesSVG(Chaines *C, char* nomInstance){
     SVGfinalize(&svg);
 }
 
-double longueurChaine(CellChaine *c){
-    if (!c){
-        printf("longueurTotale : argument NULL\n");
+double longueurChaine(CellChaine *C){
+    if (C == NULL){
+        printf("longueurTotale : c vide\n");
         return 0.0;
     }
-    double res = 0.0;
-    CellPoint *A = c->points;
-    CellPoint *B = c->points->suiv;
+    double longueur = 0.0;
+    CellPoint *A = C->points;
+    CellPoint *B = C->points->suiv;
     while(B){
-        res += sqrt((B->x - A->x)*(B->x - A->x) + (B->y - A->y)*(B->y - A->y));
+        longueur += sqrt((B->x - A->x)*(B->x - A->x) + (B->y - A->y)*(B->y - A->y));
         A = A->suiv;
         B = B->suiv;
     }
-    return res;
+    return longueur;
 }
 
 double longueurTotale(Chaines *C){
-    if (!C){
-        printf("longueurTotale : argument NULL\n");
+    if (C == NULL){
+        printf("longueurTotale : c vide\n");
         return 0.0;
     }
     double total = 0.0;
@@ -150,8 +138,8 @@ double longueurTotale(Chaines *C){
 }
 
 int comptePointsTotal(Chaines *C){
-    if (C==NULL || C->chaines==NULL){ // test validite des arguments
-        printf("comptePointsTotal : argument NULL\n");
+    if (C==NULL || C->chaines==NULL){ 
+        printf("comptePointsTotal : C vide\n");
         return 0;
     }
     int nbPoint = 0;
@@ -164,26 +152,26 @@ int comptePointsTotal(Chaines *C){
         }
         temp = temp->suiv;
     }
-    printf("Nombre total de points = %d\n", nbPoint);
+    //printf("Nombre total de points = %d\n", nbPoint);
     return nbPoint;
 }
 
 void liberer_chaines(Chaines *C){
     if (C==NULL){
-        printf("liberer_chaines : argument NULL\n");
+        printf("liberer_chaines : C deja vide\n");
         return;
     }
     while(C->chaines){
-        CellChaine* temp_chaine = C->chaines;
+        CellChaine* tempC = C->chaines;
         C->chaines = C->chaines->suiv;
         
-        while(temp_chaine->points){
-            CellPoint* temp_point = temp_chaine->points;
-            temp_chaine->points = temp_chaine->points->suiv;
-            free(temp_point);
+        while(tempC->points){
+            CellPoint* tempP = tempC->points;
+            tempC->points = tempC->points->suiv;
+            free(tempP);
         }
-        free(temp_chaine->points);
-        free(temp_chaine);
+        free(tempC->points);
+        free(tempC);
     }
     free(C->chaines);
     free(C);
